@@ -21,6 +21,11 @@ public class AppController {
         return "login";
     }
 
+    @RequestMapping(value = "/home")
+    public String home() {
+        return "home";
+    }
+
     @RequestMapping(value = "/dashboard")
     public String dashboard() {
         return "home";
