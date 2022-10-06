@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: Heshan
+Build-Jdk: Oracle OpenJDK version 19
+Implementation-Title: NZARRA
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: org.nzarra
+Main-Class: ${start-class}
+
