@@ -1,31 +1,36 @@
 package org.nzarra;
 
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseLoader.class);
 
-    private final AccountRepository repository;
+    private final UserRepository repository;
+
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public DatabaseLoader(AccountRepository repository) {
+    public DatabaseLoader(UserRepository repository, BCryptPasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("Preloading " + repository.save(new Account("admin", MD5Encoder.encode("123456".getBytes()),
-                Account.ROLE_ADMINISTRATOR, Boolean.TRUE, "Administrator")));
-        log.info("Preloading " + repository.save(new Account("heshan", MD5Encoder.encode("123456".getBytes()),
-                Account.ROLE_COMPETITION_ADMINISTRATOR, Boolean.TRUE, "Heshan Qiu")));
-        log.info("Preloading " + repository.save(new Account("donald", MD5Encoder.encode("123456".getBytes()),
-                Account.ROLE_JUDGE, Boolean.TRUE, "Donald Heimuli")));
+        log.debug("Preloading " + repository.save(new User("admin", passwordEncoder.encode("123456"),
+                Boolean.TRUE, "Administrator", List.of(User.ROLE_ADMINISTRATOR))));
+        log.debug("Preloading " + repository.save(new User("heshan", passwordEncoder.encode("123456"),
+                Boolean.TRUE, "Heshan Qiu", List.of(User.ROLE_COMPETITION_ADMINISTRATOR))));
+        log.debug("Preloading " + repository.save(new User("donald", passwordEncoder.encode("123456"),
+                Boolean.TRUE, "Donald Heimuli", List.of(User.ROLE_JUDGE))));
     }
 }

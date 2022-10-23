@@ -1,28 +1,32 @@
 package org.nzarra;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Account {
+@Table(name = "users")
+public class User {
 
-    private @Id @GeneratedValue Long id;
+    @Id
     private String username;
     private String password;
-    private String role;
-    private Boolean active;
+    private boolean active;
     private String fullName;
 
-    protected Account() {}
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "roles", joinColumns = @JoinColumn (name = "username"))
 
-    public Account(String username, String password, String role, Boolean active, String fullName) {
+    private List<String> roles;
+
+    protected User() {}
+
+    public User(String username, String password, boolean active, String fullName, List<String> roles) {
         this.username = username;
         this.password = password;
-        this.role = role;
         this.active = active;
         this.fullName = fullName;
+        this.roles = roles;
     }
 
     public static final String ROLE_ADMINISTRATOR = "Administrator";
@@ -36,29 +40,19 @@ public class Account {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        Account user = (Account) obj;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) &&
-                Objects.equals(role, user.role) && Objects.equals(active, user.active) &&
-                Objects.equals(fullName, user.fullName);
+        User user = (User) obj;
+        return Objects.equals(username, user.username) && Objects.equals(active, user.active) &&
+                Objects.equals(fullName, user.fullName) && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, role, active, fullName);
+        return Objects.hash(username, active, fullName, roles);
     }
 
     @Override
     public String toString() {
-        return "User{id=" + id + ", username='" + username + "', role='" + role + "', active=" + active +
-                ", fullName='" + fullName + "'}";
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        return "User{username='" + username + "', active=" + active + ", fullName='" + fullName + "', roles=" + roles + "}";
     }
 
     public String getUsername() {
@@ -77,19 +71,11 @@ public class Account {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String type) {
-        this.role = type;
-    }
-
-    public Boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(Boolean status) {
+    public void setActive(boolean status) {
         this.active = status;
     }
 
@@ -99,5 +85,13 @@ public class Account {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

@@ -7,6 +7,6 @@ public class AppSpringBootServletInitializer extends SpringBootServletInitialize
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(NzarraApplication.class);
+        return builder.sources(NZARRAApplication.class);
     }
 }

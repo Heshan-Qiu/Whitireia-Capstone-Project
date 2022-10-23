@@ -29,13 +29,17 @@
             <img src="images/nzarra_logo.gif" style="vertical-align: middle">
             <span class="card-title text-center mb-5 fw-light fs-5"><nobr>NZARRA Competition App</nobr></span>
           </div>
-          <form action="/login" method="post">
+          <div th:if="${param.error}">
+            <p th:text="${session.error}" th:unless="${session == null}" style="color: red">[...]</p>
+          </div>
+          <div th:if="${logout}" style="color: orange">You have been logged out.</div>
+          <form th:action="@{/login}" method="post">
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="floatingInput">
+              <input type="text" name="username" class="form-control" id="floatingInput">
               <label for="floatingInput">Username</label>
             </div>
             <div class="form-floating mb-3">
-              <input type="password" class="form-control" id="floatingPassword">
+              <input type="password" name="password" class="form-control" id="floatingPassword">
               <label for="floatingPassword">Password</label>
             </div>
 
