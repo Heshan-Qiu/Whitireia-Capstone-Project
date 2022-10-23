@@ -15,7 +15,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>NZARRA</name>
     <description>NZARRA Competition App</description>
-    <!-- <packaging>war</packaging> -->
+    <!-- <packaging>war</packaging>-->
 
     <properties>
         <java.version>17</java.version>

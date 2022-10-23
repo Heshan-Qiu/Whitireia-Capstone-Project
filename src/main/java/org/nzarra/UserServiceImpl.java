@@ -18,7 +18,7 @@ import java.util.Set;
 @Service
 public class UserServiceImpl implements UserDetailsService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private UserRepository userRepository;
 
@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserDetailsService {
             for (String role: roles)
                 ga.add(new SimpleGrantedAuthority(role));
 
-            log.debug("User: " + user + ", Password: " + user.getPassword());
             userDetails = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), ga);
         }
 

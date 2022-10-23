@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,7 +14,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class AppController {
 
-    private static final Logger log = LoggerFactory.getLogger(AppController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AppController.class);
 
     @RequestMapping(value = "/")
     public String index() {
@@ -41,20 +40,14 @@ public class AppController {
         return error;
     }
 
-    @RequestMapping(value = "/logout")
-    public String logout(Model model) {
-        model.addAttribute("logout", "true");
-        return "login";
-    }
-
-    @GetMapping(value = "/home")
+    @GetMapping(value = "/admin/home")
     public String home() {
-        return "home";
+        return "admin_home";
     }
 
     @RequestMapping(value = "/dashboard")
     public String dashboard() {
-        return "home";
+        return "admin_home";
     }
 
     @RequestMapping(value = "/users")

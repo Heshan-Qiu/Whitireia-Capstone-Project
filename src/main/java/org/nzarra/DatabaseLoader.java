@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(DatabaseLoader.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseLoader.class);
 
     private final UserRepository repository;
 
@@ -26,11 +26,11 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.debug("Preloading " + repository.save(new User("admin", passwordEncoder.encode("123456"),
+        logger.debug("Preloading " + repository.save(new User("admin", passwordEncoder.encode("123456"),
                 Boolean.TRUE, "Administrator", List.of(User.ROLE_ADMINISTRATOR))));
-        log.debug("Preloading " + repository.save(new User("heshan", passwordEncoder.encode("123456"),
+        logger.debug("Preloading " + repository.save(new User("heshan", passwordEncoder.encode("123456"),
                 Boolean.TRUE, "Heshan Qiu", List.of(User.ROLE_COMPETITION_ADMINISTRATOR))));
-        log.debug("Preloading " + repository.save(new User("donald", passwordEncoder.encode("123456"),
+        logger.debug("Preloading " + repository.save(new User("donald", passwordEncoder.encode("123456"),
                 Boolean.TRUE, "Donald Heimuli", List.of(User.ROLE_JUDGE))));
     }
 }
