@@ -2,21 +2,35 @@ package org.nzarra;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 public class AppController {
 
     private static final Logger logger = LoggerFactory.getLogger(AppController.class);
 
-    @RequestMapping(value = "/")
+    private final UserRepository userRepository;
+
+    public AppController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @GetMapping(value = "/")
     public String index() {
         return "login";
     }
@@ -45,17 +59,20 @@ public class AppController {
         return "admin_home";
     }
 
-    @RequestMapping(value = "/dashboard")
-    public String dashboard() {
-        return "admin_home";
-    }
-
-    @RequestMapping(value = "/users")
-    public String users() {
+    @GetMapping(value = "/admin/users")
+    public String users(Model model, @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size, @RequestParam("sort") Optional<String> sort) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        String pageSort = sort.orElse("username");
+        logger.debug("page: " + currentPage + " size: " + pageSize + " sort: " + pageSort);
+        Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(pageSort));
+        Page<User> pageData = userRepository.findAll(pageable);
+        model.addAttribute("pageData", pageData);
         return "users";
     }
 
-    @RequestMapping(value = "/competitions")
+    @RequestMapping(value = "/admin/competitions")
     public String competitions() {
         return "competitions";
     }
