@@ -47,7 +47,7 @@ public class SampleDataLoader implements CommandLineRunner {
                 passwordEncoder.encode("123456"), Boolean.TRUE, faker.name().fullName(),
                 List.of(User.ROLE_MARSHALL))).toList();
         List<User> scrutineers = IntStream.rangeClosed(1, 5).mapToObj(i -> new User(faker.name().username(),
-                passwordEncoder.encode("123456"), Boolean.TRUE, faker.name().fullName(),
+                passwordEncoder.encode("123456"), Boolean.FALSE, faker.name().fullName(),
                 List.of(User.ROLE_SCRUTINEER))).toList();
         repository.saveAll(judges);
         repository.saveAll(marshall);

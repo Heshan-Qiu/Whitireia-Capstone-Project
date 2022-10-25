@@ -250,7 +250,12 @@
                                             </span>
                                         </td>
                                         <td th:text="${user.fullName}"></td>
-                                        <td th:text="${user.active}"></td>
+                                        <td>
+                                            <div class="form-check form-switch">
+                                                <input type="checkbox" class="form-check-input"
+                                                       th:checked="${user.active} ? 'checked'">
+                                            </div>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
