@@ -9,14 +9,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Controller
@@ -26,8 +27,12 @@ public class AppController {
 
     private final UserRepository userRepository;
 
-    public AppController(UserRepository userRepository) {
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    public AppController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping(value = "/")
@@ -72,13 +77,60 @@ public class AppController {
         return "users";
     }
 
+    @GetMapping(value = "/admin/users/add")
+    public String usersAddForm(Model model) {
+        logger.debug("Reach the user add get method.");
+        User user = new User();
+        user.setActive(true);
+        model.addAttribute("user", user);
+        return "users_add";
+    }
+
+    @PostMapping(value = "/admin/users/add")
+    public String usersAddSubmit(@ModelAttribute User user, Model model) {
+        logger.debug("Submit user: " + user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+
+        User emptyUser = new User();
+        emptyUser.setActive(true);
+        model.addAttribute("user", emptyUser);
+        model.addAttribute("message", "Added user successfully!");
+
+        return "users_add";
+    }
+
     @RequestMapping(value = "/admin/competitions")
     public String competitions() {
+        logger.debug("Reach competitions list page.");
         return "competitions";
     }
 
-    @RequestMapping(value = "/profile")
-    public String profile() {
+    @GetMapping(value = "/profile")
+    public String profile(Authentication authentication, Model model) {
+        Optional<User> optionalUser = userRepository.findUserByUsername(authentication.getName());
+        model.addAttribute("user", optionalUser.get());
+        return "profile";
+    }
+
+    @PostMapping(value = "/profile/update")
+    public String profileUpdate(@RequestParam("username") String username, @RequestParam("fullName") String fullName,
+                                @RequestParam("oldPass") String oldPass, @RequestParam("newPass") String newPass,
+                                Model model) {
+        Optional<User> optionalUser = userRepository.findUserByUsername(username);
+        User user = optionalUser.get();
+
+        if (passwordEncoder.matches(oldPass, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPass));
+            user.setFullName(fullName);
+            userRepository.save(user);
+
+            model.addAttribute("message", "Profile updated successfully!");
+        } else {
+            model.addAttribute("message", "Old password is not correct!");
+        }
+
+        model.addAttribute("user", user);
         return "profile";
     }
 }

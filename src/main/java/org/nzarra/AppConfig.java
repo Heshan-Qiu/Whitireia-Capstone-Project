@@ -47,7 +47,7 @@ public class AppConfig {
         http.csrf().disable().
                 authorizeHttpRequests(
                 (requests) -> requests.antMatchers(ignoreResources).permitAll().
-                        antMatchers("/admin").hasAnyAuthority(User.ROLE_ADMINISTRATOR, User.ROLE_COMPETITION_ADMINISTRATOR).
+                        antMatchers("/admin/**").hasAnyAuthority(User.ROLE_ADMINISTRATOR, User.ROLE_COMPETITION_ADMINISTRATOR).
                         anyRequest().authenticated()).
                 formLogin((form) -> form.loginPage("/login").successHandler(authenticationSuccessHandler()).permitAll()).
                 logout((logout) -> logout.logoutUrl("/logout").invalidateHttpSession(true).clearAuthentication(true).permitAll());

@@ -33,16 +33,20 @@ public class SampleDataLoader implements CommandLineRunner {
         logger.debug("Preloading " + repository.save(new User("heshan", passwordEncoder.encode("123456"),
                 Boolean.TRUE, "Heshan Qiu", List.of(User.ROLE_COMPETITION_ADMINISTRATOR))));
         logger.debug("Preloading " + repository.save(new User("donald", passwordEncoder.encode("123456"),
-                Boolean.TRUE, "Donald Heimuli", List.of(User.ROLE_JUDGE, User.ROLE_MARSHALL, User.ROLE_SCRUTINEER))));
+                Boolean.TRUE, "Donald Heimuli", List.of(User.ROLE_COMPETITION_ADMINISTRATOR, User.ROLE_MARSHALL, User.ROLE_SCRUTINEER))));
+        logger.debug("Preloading " + repository.save(new User("hamid", passwordEncoder.encode("123456"),
+                Boolean.TRUE, "Hamid Mahroeian", List.of(User.ROLE_COMPETITION_ADMINISTRATOR))));
+        logger.debug("Preloading " + repository.save(new User("glen", passwordEncoder.encode("123456"),
+                Boolean.TRUE, "Glen Houlihan", List.of(User.ROLE_COMPETITION_ADMINISTRATOR, User.ROLE_JUDGE))));
 
         Faker faker = new Faker();
-        List<User> judges = IntStream.rangeClosed(1, 10).mapToObj(i -> new User(faker.name().username(),
+        List<User> judges = IntStream.rangeClosed(1, 5).mapToObj(i -> new User(faker.name().username(),
                 passwordEncoder.encode("123456"), Boolean.TRUE, faker.name().fullName(),
                 List.of(User.ROLE_JUDGE))).toList();
-        List<User> marshall = IntStream.rangeClosed(1, 10).mapToObj(i -> new User(faker.name().username(),
+        List<User> marshall = IntStream.rangeClosed(1, 3).mapToObj(i -> new User(faker.name().username(),
                 passwordEncoder.encode("123456"), Boolean.TRUE, faker.name().fullName(),
                 List.of(User.ROLE_MARSHALL))).toList();
-        List<User> scrutineers = IntStream.rangeClosed(1, 10).mapToObj(i -> new User(faker.name().username(),
+        List<User> scrutineers = IntStream.rangeClosed(1, 5).mapToObj(i -> new User(faker.name().username(),
                 passwordEncoder.encode("123456"), Boolean.TRUE, faker.name().fullName(),
                 List.of(User.ROLE_SCRUTINEER))).toList();
         repository.saveAll(judges);

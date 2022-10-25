@@ -1,22 +1,16 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
-
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="keywords"
-        content="wrappixel, admin dashboard, html css dashboard, web dashboard, bootstrap 5 admin, bootstrap 5, css3 dashboard, bootstrap 5 dashboard, materialpro admin bootstrap 5 dashboard, frontend, responsive bootstrap 5 admin template, materialpro admin lite design, materialpro admin lite dashboard bootstrap 5 dashboard template">
-  <meta name="description"
-        content="Material Pro Lite is powerful and clean admin dashboard template, inpired from Bootstrap Framework">
-  <meta name="robots" content="noindex,nofollow">
   <title>NZARRA Competition App</title>
   <link rel="canonical" href="https://www.wrappixel.com/templates/materialpro-lite/"/>
   <!-- Favicon icon -->
-  <link rel="icon" type="image/png" sizes="16x16" href="images/nzarra_logo.gif">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/nzarra_logo.gif">
   <!-- Custom CSS -->
-  <link href="css/style.min.css" rel="stylesheet">
+  <link href="/css/style.min.css" rel="stylesheet">
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -41,7 +35,7 @@
 <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full"
      data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full">
   <!-- ============================================================== -->
-  <!-- Topbar header - style you can find in pages.scss -->
+  <!-- Top bar header - style you can find in pages.scss -->
   <!-- ============================================================== -->
   <header class="topbar" data-navbarbg="skin6">
     <nav class="navbar top-navbar navbar-expand-md navbar-dark">
@@ -49,12 +43,12 @@
         <!-- ============================================================== -->
         <!-- Logo -->
         <!-- ============================================================== -->
-        <a class="navbar-brand ms-4" href="####">
+        <a class="navbar-brand ms-4" href="https://www.rocknroll.org.nz/" target="_blank">
           <!-- Logo icon -->
           <b class="logo-icon">
             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
             <!-- Dark Logo icon -->
-            <img src="images/nzarra_logo.gif" alt="homepage" class="dark-logo" height="33" width="34"/>
+            <img src="/images/nzarra_logo.gif" alt="homepage" class="dark-logo" height="33" width="34"/>
 
           </b>
           <!--End Logo icon -->
@@ -94,8 +88,9 @@
           <li class="nav-item search-box">
             <a class="nav-link text-muted" href="javascript:void(0)"><i class="ti-search"></i></a>
             <form class="app-search" style="display: none;">
-              <input type="text" class="form-control" placeholder="Search &amp; enter"> <a
-                    class="srh-btn"><i class="ti-close"></i></a></form>
+              <input type="text" class="form-control" placeholder="Search &amp; enter">
+              <a class="srh-btn"><i class="ti-close"></i></a>
+            </form>
           </li>
         </ul>
 
@@ -107,9 +102,10 @@
           <!-- User profile and search -->
           <!-- ============================================================== -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="#"
+            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" th:href="@{/profile}"
                id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="../assets/images/users/heshan.jpg" alt="user" class="profile-pic me-2">Heshan
+              <img src="/assets/images/users/agent.jpg" th:alt="${#httpServletRequest.remoteUser}"
+                   class="profile-pic me-2">[[${#httpServletRequest.remoteUser}]]
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown"></ul>
           </li>
@@ -131,22 +127,26 @@
         <ul id="sidebarnav">
           <!-- User Profile-->
           <li class="sidebar-item">
-            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/dashboard" aria-expanded="false">
+            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/admin/home}"
+               aria-expanded="false">
               <i class="mdi me-2 mdi-gauge"></i><span class="hide-menu">Dashboard</span>
             </a>
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/users" aria-expanded="false">
+            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/admin/users}"
+               aria-expanded="false">
               <i class="mdi me-2 mdi-account"></i><span class="hide-menu">Users</span>
             </a>
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/competitions" aria-expanded="false">
+            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/admin/competitions}"
+               aria-expanded="false">
               <i class="mdi me-2 mdi-table"></i><span class="hide-menu">Competitions</span>
             </a>
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/profile" aria-expanded="false">
+            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/profile}"
+               aria-expanded="false">
               <i class="mdi me-2 mdi-account-check"></i><span class="hide-menu">Profile</span>
             </a>
           </li>
@@ -159,19 +159,19 @@
       <div class="row">
         <div class="col-4 link-wrap">
           <!-- item-->
-          <a href="####" class="link" data-toggle="tooltip" title="" data-original-title="Settings">
+          <a href="#" class="link" data-toggle="tooltip" title="" data-original-title="Settings">
             <i class="ti-settings"></i>
           </a>
         </div>
         <div class="col-4 link-wrap">
           <!-- item-->
-          <a href="####" class="link" data-toggle="tooltip" title="" data-original-title="Email">
+          <a href="#" class="link" data-toggle="tooltip" title="" data-original-title="Email">
             <i class="mdi mdi-gmail"></i>
           </a>
         </div>
         <div class="col-4 link-wrap">
           <!-- item-->
-          <a href="/logout" class="link" data-toggle="tooltip" title="" data-original-title="Logout">
+          <a th:href="@{/logout}" class="link" data-toggle="tooltip" title="" data-original-title="Logout">
             <i class="mdi mdi-power"></i>
           </a>
         </div>
@@ -195,10 +195,15 @@
           <div class="d-flex align-items-center">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/home}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Competitions</li>
               </ol>
             </nav>
+          </div>
+        </div>
+        <div class="col-md-6 col-4 align-self-center">
+          <div class="text-end upgrade-btn">
+            <a th:href="@{/admin/competitions/add}" class="btn btn-danger d-none d-md-inline-block text-white">Add Competition</a>
           </div>
         </div>
       </div>
@@ -220,52 +225,52 @@
             <div class="card-body">
               <h4 class="card-title">Competitions Table</h4>
               <div class="table-responsive">
-                <table class="table user-table">
+                <table class="table user-table table-hover">
                   <thead>
                   <tr>
                     <th class="border-top-0">#</th>
-                    <th class="border-top-0">First Name</th>
-                    <th class="border-top-0">Last Name</th>
-                    <th class="border-top-0">Username</th>
+                    <th class="border-top-0">Time</th>
+                    <th class="border-top-0">Location</th>
+                    <th class="border-top-0">Sections</th>
+                    <th class="border-top-0">Active</th>
                   </tr>
                   </thead>
-                  <tbody>
                   <tr>
                     <td>1</td>
-                    <td>Deshmukh</td>
-                    <td>Prohaska</td>
-                    <td>@Genelia</td>
+                    <td>11:00 22/10/2022</td>
+                    <td>Wellington</td>
+                    <td>3</td>
+                    <td>true</td>
                   </tr>
                   <tr>
                     <td>2</td>
-                    <td>Deshmukh</td>
-                    <td>Gaylord</td>
-                    <td>@Ritesh</td>
+                    <td>11:00 22/10/2022</td>
+                    <td>Wellington</td>
+                    <td>3</td>
+                    <td>true</td>
                   </tr>
                   <tr>
                     <td>3</td>
-                    <td>Sanghani</td>
-                    <td>Gusikowski</td>
-                    <td>@Govinda</td>
+                    <td>11:00 22/10/2022</td>
+                    <td>Wellington</td>
+                    <td>3</td>
+                    <td>true</td>
                   </tr>
                   <tr>
                     <td>4</td>
-                    <td>Roshan</td>
-                    <td>Rogahn</td>
-                    <td>@Hritik</td>
+                    <td>11:00 22/10/2022</td>
+                    <td>Wellington</td>
+                    <td>3</td>
+                    <td>true</td>
                   </tr>
                   <tr>
                     <td>5</td>
-                    <td>Joshi</td>
-                    <td>Hickle</td>
-                    <td>@Maruti</td>
+                    <td>11:00 22/10/2022</td>
+                    <td>Wellington</td>
+                    <td>3</td>
+                    <td>true</td>
                   </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>Nigam</td>
-                    <td>Eichmann</td>
-                    <td>@Sonu</td>
-                  </tr>
+                  <tbody>
                   </tbody>
                 </table>
               </div>
@@ -290,7 +295,8 @@
     <!-- ============================================================== -->
     <!-- footer -->
     <!-- ============================================================== -->
-    <footer class="footer"> © NZARRA Competition App by <a href="http://www.whitireia.ac.nz/">Whitireia Community Polytechnic</a>
+    <footer class="footer"> © NZARRA Competition App by <a href="https://www.whitireia.ac.nz/">Whitireia Community
+      Polytechnic</a>
     </footer>
     <!-- ============================================================== -->
     <!-- End footer -->
@@ -306,16 +312,16 @@
 <!-- ============================================================== -->
 <!-- All Jquery -->
 <!-- ============================================================== -->
-<script src="../assets/plugins/jquery/dist/jquery.min.js"></script>
+<script src="/assets/plugins/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap tether Core JavaScript -->
-<script src="../assets/plugins/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/app-style-switcher.js"></script>
+<script src="/assets/plugins/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app-style-switcher.js"></script>
 <!--Wave Effects -->
-<script src="js/waves.js"></script>
+<script src="/js/waves.js"></script>
 <!--Menu sidebar -->
-<script src="js/sidebarmenu.js"></script>
+<script src="/js/sidebarmenu.js"></script>
 <!--Custom JavaScript -->
-<script src="js/custom.js"></script>
+<script src="/js/custom.js"></script>
 </body>
 
 </html>

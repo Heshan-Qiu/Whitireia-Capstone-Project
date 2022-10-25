@@ -35,7 +35,7 @@
 <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full"
      data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full">
     <!-- ============================================================== -->
-    <!-- Topbar header - style you can find in pages.scss -->
+    <!-- Top bar header - style you can find in pages.scss -->
     <!-- ============================================================== -->
     <header class="topbar" data-navbarbg="skin6">
         <nav class="navbar top-navbar navbar-expand-md navbar-dark">
@@ -43,7 +43,7 @@
                 <!-- ============================================================== -->
                 <!-- Logo -->
                 <!-- ============================================================== -->
-                <a class="navbar-brand ms-4" href="####">
+                <a class="navbar-brand ms-4" href="https://www.rocknroll.org.nz/" target="_blank">
                     <!-- Logo icon -->
                     <b class="logo-icon">
                         <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -88,8 +88,9 @@
                     <li class="nav-item search-box">
                         <a class="nav-link text-muted" href="javascript:void(0)"><i class="ti-search"></i></a>
                         <form class="app-search" style="display: none;">
-                            <input type="text" class="form-control" placeholder="Search &amp; enter"> <a
-                                class="srh-btn"><i class="ti-close"></i></a></form>
+                            <input type="text" class="form-control" placeholder="Search &amp; enter">
+                            <a class="srh-btn"><i class="ti-close"></i></a>
+                        </form>
                     </li>
                 </ul>
 
@@ -101,7 +102,7 @@
                     <!-- User profile and search -->
                     <!-- ============================================================== -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="#"
+                        <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" th:href="@{/profile}"
                            id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="/assets/images/users/agent.jpg" th:alt="${#httpServletRequest.remoteUser}"
                                  class="profile-pic me-2">[[${#httpServletRequest.remoteUser}]]
@@ -190,12 +191,13 @@
         <div class="page-breadcrumb">
             <div class="row align-items-center">
                 <div class="col-md-6 col-8 align-self-center">
-                    <h3 class="page-title mb-0 p-0">Profile</h3>
+                    <h3 class="page-title mb-0 p-0">Users</h3>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a th:href="@{/admin/home}">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                                <li class="breadcrumb-item"><a th:href="@{/admin/users}">Users</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Add</li>
                             </ol>
                         </nav>
                     </div>
@@ -220,8 +222,6 @@
                         <div class="card-body profile-card">
                             <div class="mt-4" style="text-align: center;">
                                 <img src="/assets/images/users/agent.jpg" class="rounded-circle" width="150"/>
-                                <h4 class="card-title mt-2" th:each="role : ${user.roles}" th:text="${role}"/>
-                                </h4>
                             </div>
                         </div>
                     </div>
@@ -236,43 +236,64 @@
                 <div class="col-lg-8 col-xlg-9 col-md-7">
                     <div class="card">
                         <div class="card-body">
-                            <form th:action="@{/profile/update}" method="post" id="profileForm"
+                            <form th:action="@{/admin/users/add}" th:object="${user}" method="post" id="userForm"
                                   class="form-horizontal form-material mx-2">
                                 <div class="form-group">
-                                    <label class="col-md-12 mb-0">Full Name</label>
+                                    <label class="col-md-12 mb-0">Username</label>
                                     <div class="col-md-12">
-                                        <input type="text" name="fullName" th:value="${user.fullName}"
+                                        <input type="text" th:field="*{username}" name="username" placeholder="Username"
                                                class="form-control ps-0 form-control-line">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-12 mb-0">Old Password</label>
+                                    <label class="col-md-12 mb-0">Password</label>
                                     <div class="col-md-12">
-                                        <input type="password" name="oldPass" placeholder="Type the old password"
-                                               class="form-control ps-0 form-control-line">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-12 mb-0">New Password</label>
-                                    <div class="col-md-12">
-                                        <input type="password" name="newPass" placeholder="Type the new password"
-                                               class="form-control ps-0 form-control-line">
+                                        <input type="password" th:field="*{password}" placeholder="Type your password"
+                                               name="password" class="form-control ps-0 form-control-line">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-12 mb-0">Confirm Password</label>
                                     <div class="col-md-12">
-                                        <input type="password" name="confirmPass" placeholder="Confirm the new password"
+                                        <input type="password" name="confirmPass" placeholder="Confirm the password"
                                                class="form-control ps-0 form-control-line">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12 mb-0">Full Name</label>
+                                    <div class="col-md-12">
+                                        <input type="text" th:field="*{fullName}" name="fullName" placeholder="Full Name"
+                                               class="form-control ps-0 form-control-line">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-12">Roles</label>
+                                    <div class="col-sm-12 border-bottom">
+                                        <select th:field="*{roles}" multiple="multiple" name="roles" id="roles"
+                                                style="height: calc(5em + 2.5rem + 2px);"
+                                                class="form-select shadow-none ps-0 border-0 form-control-line">
+                                            <option value="Administrator">Administrator</option>
+                                            <option value="Competition Administrator">Competition Administrator</option>
+                                            <option value="Judge">Judge</option>
+                                            <option value="Marshall">Marshall</option>
+                                            <option value="Scrutineer">Scrutineer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12 mb-0">Active</label>
+                                    <div class="col-md-12">
+                                        <div class="form-check form-switch">
+                                            <input th:field="*{active}" type="checkbox" class="form-check-input" checked>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 d-flex">
                                         <input type="button" class="btn btn-success mx-auto mx-md-0 text-white"
-                                               onclick="validateForm()" value="Update Profile">
+                                               onclick="validateForm()" value="Save">
                                     </div>
                                 </div>
-                                <input type="hidden" name="username" th:value="${user.username}">
                             </form>
                         </div>
                     </div>
@@ -297,7 +318,7 @@
         <!-- ============================================================== -->
         <!-- footer -->
         <!-- ============================================================== -->
-        <footer class="footer"> © NZARRA Competition App by <a href="http://www.whitireia.ac.nz/">Whitireia Community
+        <footer class="footer"> © NZARRA Competition App by <a href="https://www.whitireia.ac.nz/">Whitireia Community
             Polytechnic</a>
         </footer>
         <!-- ============================================================== -->
@@ -326,35 +347,40 @@
 <script src="/js/custom.js"></script>
 <script>
     function validateForm() {
-        const form = document.getElementById('profileForm');
+        const form = document.getElementById('userForm');
         const min = 6;
         const max = 16;
         const regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
+        if (form.username.value === '') {
+            alert("Please input username.");
+            form.username.focus();
+            return false;
+        }
+        if (form.password.value.length < min || form.password.value.length > max) {
+            alert("Password length must be 6 to 16 characters.");
+            form.password.focus();
+            return false;
+        }
+        if (!regularExpression.test(form.password.value)) {
+            alert("Password must contain at least 1 number and 1 special character [!@#$%^&*].");
+            form.password.focus();
+            return false;
+        }
+        if (form.password.value !== form.confirmPass.value) {
+            alert("The passwords entered twice do not match, please re-enter.")
+            form.confirmPass.value = '';
+            form.confirmPass.focus();
+            return false;
+        }
         if (form.fullName.value === '') {
             alert("Please input full name.");
             form.fullName.focus();
             return false;
         }
-        if (form.oldPass.value === '') {
-            alert("Please input the old password.");
-            form.oldPass.focus();
-            return false;
-        }
-        if (form.newPass.value.length < min || form.newPass.value.length > max) {
-            alert("New password length must be 6 to 16 characters.");
-            form.newPass.focus();
-            return false;
-        }
-        if (!regularExpression.test(form.newPass.value)) {
-            alert("New password must contain at least 1 number and 1 special character [!@#$%^&*].");
-            form.newPass.focus();
-            return false;
-        }
-        if (form.newPass.value !== form.confirmPass.value) {
-            alert("The passwords entered twice do not match, please re-enter.")
-            form.confirmPass.value = '';
-            form.confirmPass.focus();
+        if (!$("#roles option:selected").length) {
+            alert("Please select at least one role.");
+            form.roles.focus();
             return false;
         }
 
