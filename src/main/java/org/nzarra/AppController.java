@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.Optional;
 
 @Controller
@@ -80,7 +81,7 @@ public class AppController {
     }
 
     @GetMapping(value = "/admin/users/add")
-    public String usersAddForm(Model model) {
+    public String userAddForm(Model model) {
         logger.debug("Reach the user add get method.");
         User user = new User();
         user.setActive(true);
@@ -89,7 +90,7 @@ public class AppController {
     }
 
     @PostMapping(value = "/admin/users/add")
-    public String usersAddSubmit(@ModelAttribute User user, Model model) {
+    public String userAddSubmit(@ModelAttribute User user, Model model) {
         logger.debug("Submit user: " + user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -105,7 +106,6 @@ public class AppController {
     @GetMapping(value = "/admin/competitions")
     public String competitions(Model model, @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size, @RequestParam("sort") Optional<String> sort) {
-        logger.debug("Reach competitions list page.");
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
         String pageSort = sort.orElse("date");
@@ -113,6 +113,29 @@ public class AppController {
         Page<Competition> pageData = competitionRepository.findAll(pageable);
         model.addAttribute("pageData", pageData);
         return "competitions";
+    }
+
+    @GetMapping(value = "/admin/competitions/add")
+    public String competitionAddForm(Model model) {
+        logger.debug("Reach this competition get method.");
+        Competition competition = new Competition();
+        competition.setDate(new Date());
+        competition.setActive(true);
+        model.addAttribute("competition", competition);
+        return "competition_add";
+    }
+
+    @PostMapping(value = "/admin/competitions/add")
+    public String competitionAddSubmit(@ModelAttribute Competition competition, Model model) {
+        competitionRepository.save(competition);
+
+        Competition emptyCompetition = new Competition();
+        emptyCompetition.setDate(new Date());
+        emptyCompetition.setActive(true);
+        model.addAttribute("competition", emptyCompetition);
+        model.addAttribute("message", "Added competition successfully!");
+
+        return "competition_add";
     }
 
     @GetMapping(value = "/profile")

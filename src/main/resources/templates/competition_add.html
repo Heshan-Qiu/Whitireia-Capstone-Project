@@ -191,7 +191,7 @@
         <div class="page-breadcrumb">
             <div class="row align-items-center">
                 <div class="col-md-6 col-8 align-self-center">
-                    <h3 class="page-title mb-0 p-0">Users</h3>
+                    <h3 class="page-title mb-0 p-0">Competition Add Form</h3>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -217,17 +217,6 @@
             <!-- Row -->
             <div class="row">
                 <!-- Column -->
-                <div class="col-lg-4 col-xlg-3 col-md-5">
-                    <div class="card">
-                        <div class="card-body profile-card">
-                            <div class="mt-4" style="text-align: center;">
-                                <img src="/assets/images/users/agent.jpg" class="rounded-circle" width="150"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Column -->
-                <!-- Column -->
                 <div class="col-lg-8 col-xlg-9 col-md-7">
                     <div th:if="${message}" class="card">
                         <div class="card-body" style="text-align: center;">
@@ -236,55 +225,53 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <form th:action="@{/admin/users/add}" th:object="${user}" method="post" id="userForm"
+                            <form th:action="@{/admin/competitions/add}" th:object="${competition}" method="post"
+                                  id="competitionForm"
                                   class="form-horizontal form-material mx-2">
                                 <div class="form-group">
-                                    <label class="col-md-12 mb-0">Username</label>
+                                    <label class="col-md-12 mb-0">Name</label>
                                     <div class="col-md-12">
-                                        <input type="text" th:field="*{username}" name="username" placeholder="Username"
+                                        <input type="text" th:field="*{name}" placeholder="Competition name"
+                                               class="form-control ps-0 form-control-line">
+                                    </div>
+                                </div>
+                                <div class="well">
+                                    <div id="datetimepicker4" class="input-append">
+                                        <input data-format="yyyy-MM-dd" type="text"></input>
+                                        <span class="add-on">
+      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+      </i>
+    </span>
+                                    </div>
+                                </div>
+                                <script type="text/javascript">
+                                    $(function() {
+                                        $('#datetimepicker4').datetimepicker({
+                                            pickTime: false
+                                        });
+                                    });
+                                </script>
+                                <div class="form-group">
+                                    <label class="col-md-12 mb-0">Location</label>
+                                    <div class="col-md-12">
+                                        <input type="text" th:field="*{location}" placeholder="Competition location"
                                                class="form-control ps-0 form-control-line">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-12 mb-0">Password</label>
+                                    <label class="col-md-12 mb-0">Sections</label>
                                     <div class="col-md-12">
-                                        <input type="password" th:field="*{password}" placeholder="Type your password"
-                                               name="password" class="form-control ps-0 form-control-line">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-12 mb-0">Confirm Password</label>
-                                    <div class="col-md-12">
-                                        <input type="password" name="confirmPass" placeholder="Confirm the password"
-                                               class="form-control ps-0 form-control-line">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-12 mb-0">Full Name</label>
-                                    <div class="col-md-12">
-                                        <input type="text" th:field="*{fullName}" name="fullName" placeholder="Full Name"
-                                               class="form-control ps-0 form-control-line">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-12">Roles</label>
-                                    <div class="col-sm-12 border-bottom">
-                                        <select th:field="*{roles}" multiple="multiple" name="roles" id="roles"
-                                                style="height: calc(5em + 2.5rem + 2px);"
-                                                class="form-select shadow-none ps-0 border-0 form-control-line">
-                                            <option value="Administrator">Administrator</option>
-                                            <option value="Competition Administrator">Competition Administrator</option>
-                                            <option value="Judge">Judge</option>
-                                            <option value="Marshall">Marshall</option>
-                                            <option value="Scrutineer">Scrutineer</option>
-                                        </select>
+                                        <div class="form-outline">
+                                            <input type="number" th:field="*{sections}" class="form-control"/>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-12 mb-0">Active</label>
                                     <div class="col-md-12">
                                         <div class="form-check form-switch">
-                                            <input th:field="*{active}" type="checkbox" class="form-check-input" checked>
+                                            <input th:field="*{active}" type="checkbox" class="form-check-input"
+                                                   checked>
                                         </div>
                                     </div>
                                 </div>
@@ -345,44 +332,12 @@
 <script src="/js/sidebarmenu.js"></script>
 <!--Custom JavaScript -->
 <script src="/js/custom.js"></script>
+<!-- Datetimepicker JavaScript -->
+<script type="text/javascript" src="/js/moment.min.js"></script>
+
 <script>
     function validateForm() {
-        const form = document.getElementById('userForm');
-        const min = 6;
-        const max = 16;
-        const regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-
-        if (form.username.value === '') {
-            alert("Please input username.");
-            form.username.focus();
-            return false;
-        }
-        if (form.password.value.length < min || form.password.value.length > max) {
-            alert("Password length must be 6 to 16 characters.");
-            form.password.focus();
-            return false;
-        }
-        if (!regularExpression.test(form.password.value)) {
-            alert("Password must contain at least 1 number and 1 special character [!@#$%^&*].");
-            form.password.focus();
-            return false;
-        }
-        if (form.password.value !== form.confirmPass.value) {
-            alert("The passwords entered twice do not match, please re-enter.")
-            form.confirmPass.value = '';
-            form.confirmPass.focus();
-            return false;
-        }
-        if (form.fullName.value === '') {
-            alert("Please input full name.");
-            form.fullName.focus();
-            return false;
-        }
-        if (!$("#roles option:selected").length) {
-            alert("Please select at least one role.");
-            form.roles.focus();
-            return false;
-        }
+        const form = document.getElementById('competitionForm');
 
         form.submit();
     }
