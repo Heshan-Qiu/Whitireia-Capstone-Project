@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Controller
@@ -27,11 +26,15 @@ public class AppController {
 
     private final UserRepository userRepository;
 
+    private final CompetitionRepository competitionRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public AppController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public AppController(UserRepository userRepository, CompetitionRepository competitionRepository,
+                         BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.competitionRepository = competitionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -70,7 +73,6 @@ public class AppController {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
         String pageSort = sort.orElse("username");
-        logger.debug("page: " + currentPage + " size: " + pageSize + " sort: " + pageSort);
         Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(pageSort));
         Page<User> pageData = userRepository.findAll(pageable);
         model.addAttribute("pageData", pageData);
@@ -83,7 +85,7 @@ public class AppController {
         User user = new User();
         user.setActive(true);
         model.addAttribute("user", user);
-        return "users_add";
+        return "user_add";
     }
 
     @PostMapping(value = "/admin/users/add")
@@ -97,12 +99,19 @@ public class AppController {
         model.addAttribute("user", emptyUser);
         model.addAttribute("message", "Added user successfully!");
 
-        return "users_add";
+        return "user_add";
     }
 
-    @RequestMapping(value = "/admin/competitions")
-    public String competitions() {
+    @GetMapping(value = "/admin/competitions")
+    public String competitions(Model model, @RequestParam("page") Optional<Integer> page,
+                               @RequestParam("size") Optional<Integer> size, @RequestParam("sort") Optional<String> sort) {
         logger.debug("Reach competitions list page.");
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        String pageSort = sort.orElse("date");
+        Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(pageSort));
+        Page<Competition> pageData = competitionRepository.findAll(pageable);
+        model.addAttribute("pageData", pageData);
         return "competitions";
     }
 
