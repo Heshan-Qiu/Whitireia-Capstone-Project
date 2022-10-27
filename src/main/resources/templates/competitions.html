@@ -233,6 +233,9 @@
                     <th class="border-top-0">Date and Time</th>
                     <th class="border-top-0">Location</th>
                     <th class="border-top-0">Sections</th>
+                    <th class="border-top-0">Judges</th>
+                    <th class="border-top-0">Scrutineers</th>
+                    <th class="border-top-0">Marshall</th>
                     <th class="border-top-0">Active</th>
                   </tr>
                   </thead>
@@ -240,9 +243,20 @@
                   <tr th:each="competition, iterStat : ${pageData.content}">
                     <td th:text="${iterStat.index + pageData.number * pageData.size + 1}"></td>
                     <td th:text="${competition.name}"></td>
-                    <td th:text="${competition.date}"></td>
+                    <td th:text="${#dates.format(competition.date, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${competition.location}"></td>
                     <td th:text="${competition.sections}"></td>
+                    <td>
+                      <span th:each="judge : ${competition.judges}">
+                        <span th:text="${judge}"/><br th:if="${competition.judges.size} > 1"/>
+                      </span>
+                    </td>
+                    <td>
+                      <span th:each="scrutineer : ${competition.scrutineers}">
+                        <span th:text="${scrutineer}"/><br th:if="${competition.scrutineers.size} > 1"/>
+                      </span>
+                    </td>
+                    <td th:text="${competition.marshall}"></td>
                     <td>
                       <div class="form-check form-switch">
                         <input type="checkbox" class="form-check-input"

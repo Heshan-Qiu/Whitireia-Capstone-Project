@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -117,11 +119,7 @@ public class AppController {
 
     @GetMapping(value = "/admin/competitions/add")
     public String competitionAddForm(Model model) {
-        logger.debug("Reach this competition get method.");
-        Competition competition = new Competition();
-        competition.setDate(new Date());
-        competition.setActive(true);
-        model.addAttribute("competition", competition);
+        initCompetitionFormData(model);
         return "competition_add";
     }
 
@@ -129,18 +127,33 @@ public class AppController {
     public String competitionAddSubmit(@ModelAttribute Competition competition, Model model) {
         competitionRepository.save(competition);
 
-        Competition emptyCompetition = new Competition();
-        emptyCompetition.setDate(new Date());
-        emptyCompetition.setActive(true);
-        model.addAttribute("competition", emptyCompetition);
+        initCompetitionFormData(model);
         model.addAttribute("message", "Added competition successfully!");
 
         return "competition_add";
     }
 
+    public void initCompetitionFormData(Model model) {
+        Competition competition = new Competition();
+        competition.setDate(new Date());
+        competition.setActive(true);
+
+        List<String> judges = new ArrayList<>();
+        userRepository.findByRolesInAndActive(List.of(User.ROLE_JUDGE), true).forEach((judge) -> judges.add(judge.getUsername()));
+        List<String> scrutineers = new ArrayList<>();
+        userRepository.findByRolesInAndActive(List.of(User.ROLE_SCRUTINEER), true).forEach((scrutineer) -> scrutineers.add(scrutineer.getUsername()));
+        List<String> marshalls = new ArrayList<>();
+        userRepository.findByRolesInAndActive(List.of(User.ROLE_MARSHALL), true).forEach((marshall) -> marshalls.add(marshall.getUsername()));
+
+        model.addAttribute("competition", competition);
+        model.addAttribute("judges", judges);
+        model.addAttribute("scrutineers", scrutineers);
+        model.addAttribute("marshalls", marshalls);
+    }
+
     @GetMapping(value = "/profile")
     public String profile(Authentication authentication, Model model) {
-        Optional<User> optionalUser = userRepository.findUserByUsername(authentication.getName());
+        Optional<User> optionalUser = userRepository.findByUsername(authentication.getName());
         model.addAttribute("user", optionalUser.get());
         return "profile";
     }
@@ -149,7 +162,7 @@ public class AppController {
     public String profileUpdate(@RequestParam("username") String username, @RequestParam("fullName") String fullName,
                                 @RequestParam("oldPass") String oldPass, @RequestParam("newPass") String newPass,
                                 Model model) {
-        Optional<User> optionalUser = userRepository.findUserByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
         User user = optionalUser.get();
 
         if (passwordEncoder.matches(oldPass, user.getPassword())) {

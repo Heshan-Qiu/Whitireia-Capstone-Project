@@ -16,7 +16,6 @@ public class User {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "roles", joinColumns = @JoinColumn (name = "username"))
-
     private List<String> roles;
 
     protected User() {}
