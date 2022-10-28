@@ -66,7 +66,7 @@ public class AppController {
     }
 
     @GetMapping(value = "/admin/home")
-    public String home() {
+    public String adminHome() {
         return "admin_home";
     }
 
@@ -177,5 +177,34 @@ public class AppController {
 
         model.addAttribute("user", user);
         return "profile";
+    }
+
+    @GetMapping(value = "/judge/home")
+    public String judgeHome() {
+        return "judge_home";
+    }
+
+    @PostMapping(value = "/judge/add")
+    public String judgeAdd(Model model) {
+        model.addAttribute("message", "Save data successfully!");
+
+        return "judge_home";
+    }
+
+    @GetMapping(value = "/scrutineer/home")
+    public String scrutineerHome() {
+        return "scrutineer_home";
+    }
+
+    @GetMapping(value = "/marshall/home")
+    public String marshallHome() {
+        return "marshall_home";
+    }
+
+    @PostMapping(value = "/marshall/add")
+    public String marshallAdd(Model model) {
+        model.addAttribute("message", "Save data successfully!");
+
+        return "marshall_home";
     }
 }

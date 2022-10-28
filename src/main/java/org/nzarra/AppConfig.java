@@ -48,6 +48,9 @@ public class AppConfig {
                 authorizeHttpRequests(
                 (requests) -> requests.antMatchers(ignoreResources).permitAll().
                         antMatchers("/admin/**").hasAnyAuthority(User.ROLE_ADMINISTRATOR, User.ROLE_COMPETITION_ADMINISTRATOR).
+                        antMatchers("/judge/**").hasAuthority(User.ROLE_JUDGE).
+                        antMatchers("/scrutineer/**").hasAuthority(User.ROLE_SCRUTINEER).
+                        antMatchers("/marshall/**").hasAuthority(User.ROLE_MARSHALL).
                         anyRequest().authenticated()).
                 formLogin((form) -> form.loginPage("/login").successHandler(authenticationSuccessHandler()).permitAll()).
                 logout((logout) -> logout.logoutUrl("/logout").invalidateHttpSession(true).clearAuthentication(true).permitAll());
@@ -81,6 +84,9 @@ public class AppConfig {
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put(User.ROLE_ADMINISTRATOR, "/admin/home");
         roleTargetUrlMap.put(User.ROLE_COMPETITION_ADMINISTRATOR, "/admin/home");
+        roleTargetUrlMap.put(User.ROLE_JUDGE, "/judge/home");
+        roleTargetUrlMap.put(User.ROLE_SCRUTINEER, "/scrutineer/home");
+        roleTargetUrlMap.put(User.ROLE_MARSHALL, "/marshall/home");
 
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {

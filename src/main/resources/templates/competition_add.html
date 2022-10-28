@@ -102,12 +102,10 @@
                     <!-- User profile and search -->
                     <!-- ============================================================== -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" th:href="@{/profile}"
-                           id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link" th:href="@{/profile}">
                             <img src="/assets/images/users/agent.jpg" th:alt="${#httpServletRequest.remoteUser}"
                                  class="profile-pic me-2">[[${#httpServletRequest.remoteUser}]]
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown"></ul>
                     </li>
                 </ul>
             </div>

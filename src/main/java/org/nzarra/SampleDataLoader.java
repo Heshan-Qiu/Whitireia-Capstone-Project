@@ -47,6 +47,13 @@ public class SampleDataLoader implements CommandLineRunner {
         logger.debug("Preloading " + userRepository.save(new User("glen", passwordEncoder.encode("123456"),
                 Boolean.TRUE, "Glen Houlihan", List.of(User.ROLE_COMPETITION_ADMINISTRATOR, User.ROLE_JUDGE))));
 
+        logger.debug("Preloading " + userRepository.save(new User("1", passwordEncoder.encode("1"),
+                Boolean.TRUE, "1", List.of(User.ROLE_JUDGE))));
+        logger.debug("Preloading " + userRepository.save(new User("2", passwordEncoder.encode("2"),
+                Boolean.TRUE, "2", List.of(User.ROLE_MARSHALL))));
+        logger.debug("Preloading " + userRepository.save(new User("3", passwordEncoder.encode("3"),
+                Boolean.TRUE, "3", List.of(User.ROLE_SCRUTINEER))));
+
         Faker faker = new Faker();
         List<User> judges = IntStream.rangeClosed(1, 10).mapToObj(i -> new User(faker.name().username(),
                 passwordEncoder.encode("123456"), faker.bool().bool(), faker.name().fullName(),
