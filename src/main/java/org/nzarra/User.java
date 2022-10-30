@@ -9,9 +9,16 @@ import java.util.Objects;
 public class User {
 
     @Id
+    @GeneratedValue
+    private Integer id;
+
+    @Column(unique = true)
     private String username;
+
     private String password;
+
     private boolean active;
+
     private String fullName;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -52,6 +59,10 @@ public class User {
     @Override
     public String toString() {
         return "User{username='" + username + "', active=" + active + ", fullName='" + fullName + "', roles=" + roles + "}";
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getUsername() {

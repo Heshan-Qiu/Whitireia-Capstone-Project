@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,13 +32,16 @@ public class AppController {
 
     private final CompetitionRepository competitionRepository;
 
+    private final SectionRepository sectionRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public AppController(UserRepository userRepository, CompetitionRepository competitionRepository,
-                         BCryptPasswordEncoder passwordEncoder) {
+                         SectionRepository sectionRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.competitionRepository = competitionRepository;
+        this.sectionRepository = sectionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -133,7 +137,7 @@ public class AppController {
         return "competition_add";
     }
 
-    public void initCompetitionFormData(Model model) {
+    private void initCompetitionFormData(Model model) {
         Competition competition = new Competition();
         competition.setDate(new Date());
         competition.setActive(true);
@@ -206,5 +210,50 @@ public class AppController {
         model.addAttribute("message", "Save data successfully!");
 
         return "marshall_home";
+    }
+
+    @GetMapping(value = "/admin/sections")
+    public String sections(Model model, @RequestParam("competition_id") Integer competitionId,
+                           @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size,
+                           @RequestParam("sort") Optional<String> sort) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        String pageSort = sort.orElse("id");
+        Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(pageSort));
+
+        Optional<Competition> optionalCompetition = competitionRepository.findById(competitionId);
+        Page<Section> pageData = sectionRepository.findAllByCompetition(optionalCompetition.get(), pageable);
+        model.addAttribute("pageData", pageData);
+        model.addAttribute("competition", optionalCompetition.get());
+
+        return "sections";
+    }
+
+    @GetMapping(value = "/admin/sections/add")
+    public String sectionAddForm(@RequestParam("competition_id") Integer competitionId, Model model) {
+        initSectionFormData(competitionId, model);
+        return "section_add";
+    }
+
+    @PostMapping(value = "/admin/sections/add")
+    public String sectionAddSubmit(@ModelAttribute Section section, Model model) {
+        sectionRepository.save(section);
+
+        initSectionFormData(section.getCompetition().getId(), model);
+        model.addAttribute("message", "Added section successfully!");
+
+        return "section_add";
+    }
+
+    private void initSectionFormData(Integer competitionId, Model model) {
+        Competition competition = competitionRepository.findById(competitionId).get();
+
+        Section section = new Section();
+        section.setIndex(competition.getSectionList().size() + 1);
+        section.setCompetition(competition);
+        section.setTime(new Time(new Date().getTime()));
+        section.setActive(true);
+
+        model.addAttribute("section", section);
     }
 }

@@ -34,6 +34,9 @@ public class Competition {
 
     private boolean active;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "competition")
+    private List<Section> sectionList;
+
     protected Competition() {}
 
     public Competition(String name, Date date, String location, Integer sections, List<String> judges,
@@ -48,12 +51,21 @@ public class Competition {
         this.active = active;
     }
 
-    public Integer getId() {
-        return id;
+    public Competition(String name, Date date, String location, Integer sections, List<String> judges,
+                       List<String> scrutineers, String marshall, boolean active, List<Section> sectionList) {
+        this.name = name;
+        this.date = date;
+        this.location = location;
+        this.sections = sections;
+        this.judges = judges;
+        this.scrutineers = scrutineers;
+        this.marshall = marshall;
+        this.active = active;
+        this.sectionList = sectionList;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getId() {
+        return id;
     }
 
     public String getName() {
@@ -118,5 +130,13 @@ public class Competition {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public List<Section> getSectionList() {
+        return sectionList;
+    }
+
+    public void setSectionList(List<Section> sectionList) {
+        this.sectionList = sectionList;
     }
 }
