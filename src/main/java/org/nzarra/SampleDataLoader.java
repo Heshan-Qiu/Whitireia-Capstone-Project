@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,13 +25,20 @@ public class SampleDataLoader implements CommandLineRunner {
 
     private final CompetitionRepository competitionRepository;
 
+    private final SectionRepository sectionRepository;
+
+    private final CompetitorRepository competitorRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public SampleDataLoader(UserRepository userRepository, CompetitionRepository competitionRepository,
+                            SectionRepository sectionRepository, CompetitorRepository competitorRepository,
                             BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.competitionRepository = competitionRepository;
+        this.sectionRepository = sectionRepository;
+        this.competitorRepository = competitorRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -92,5 +100,25 @@ public class SampleDataLoader implements CommandLineRunner {
                         faker.address().fullAddress(), faker.number().numberBetween(1, 5), judgeNames, scrutineerNames,
                         marshall2.getUsername(), faker.bool().bool())).toList();
         competitionRepository.saveAll(competitions);
+
+        List<Competition> marshallCompetitions = IntStream.rangeClosed(1, 3).mapToObj(
+                i -> new Competition(faker.funnyName().name(), faker.date().between(from, to),
+                        faker.address().fullAddress(), faker.number().numberBetween(1, 5), judgeNames, scrutineerNames,
+                        "2", true)).toList();
+        competitionRepository.saveAll(marshallCompetitions);
+        for (Competition competition : marshallCompetitions) {
+            Time time = new Time(new Date().getTime());
+            List<Section> sections = IntStream.rangeClosed(1, 4).mapToObj(i -> new Section(faker.number().randomDigit(),
+                    faker.funnyName().name(), time, faker.funnyName().name(), Boolean.TRUE, competition)).toList();
+            sectionRepository.saveAll(sections);
+
+            for (Section section : sections) {
+                List<Competitor> competitors = IntStream.rangeClosed(1, 4).mapToObj(i -> new Competitor(
+                        faker.number().randomDigit(), IntStream.rangeClosed(1, 3).mapToObj(
+                                j -> faker.name().fullName()).toList(), faker.color().name(), faker.number().digit(),
+                        section)).toList();
+                competitorRepository.saveAll(competitors);
+            }
+        }
     }
 }

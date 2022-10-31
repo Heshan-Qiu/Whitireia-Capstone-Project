@@ -25,6 +25,9 @@ public class Section {
     @JoinColumn(name = "competition_id")
     private Competition competition;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "section")
+    private List<Competitor> competitors;
+
     protected Section() {
     }
 
@@ -35,6 +38,17 @@ public class Section {
         this.song = song;
         this.active = active;
         this.competition = competition;
+    }
+
+    public Section(Integer index, String name, Time time, String song, boolean active, Competition competition,
+                   List<Competitor> competitors) {
+        this.index = index;
+        this.name = name;
+        this.time = time;
+        this.song = song;
+        this.active = active;
+        this.competition = competition;
+        this.competitors = competitors;
     }
 
     public Integer getId() {
@@ -87,5 +101,13 @@ public class Section {
 
     public void setCompetition(Competition competition) {
         this.competition = competition;
+    }
+
+    public List<Competitor> getCompetitors() {
+        return competitors;
+    }
+
+    public void setCompetitors(List<Competitor> competitors) {
+        this.competitors = competitors;
     }
 }

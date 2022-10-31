@@ -111,8 +111,31 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Section 1 List</h4>
-                            <form th:action="@{/marshall/add}" method="post" id="marshallForm" class="form-horizontal form-material mx-2">
+                            <form th:action="@{/marshall/add}" method="post" th:object="${marshallForm}" id="marshallForm"
+                                  class="form-horizontal form-material mx-2">
+                                <div class="form-group">
+                                    <label class="col-sm-12">Competition</label>
+                                    <div class="col-sm-12 border-bottom">
+                                        <select id="competition" onchange="competitionChange()"
+                                                class="form-select shadow-none ps-0 border-0 form-control-line">
+                                            <option th:each="competition, iterStat : ${competitions}"
+                                                    th:value="${competition.id}" th:text="${competition.name}"
+                                                    th:checked="${iterStat.first}"/>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-12">Section</label>
+                                    <div class="col-sm-12 border-bottom">
+                                        <select id="section" th:field="*{sectionId}" onchange="sectionChange()"
+                                                class="form-select shadow-none ps-0 border-0 form-control-line">
+                                            <option th:each="section, iterStat : ${sections}"
+                                                    th:value="${section.id}" th:text="${section.name}"
+                                                    th:checked="${iterStat.first}"/>
+                                        </select>
+                                    </div>
+                                </div>
+                                <h4 id="table_title" class="card-title" th:text="${'Section ' + sectionName + ' Competitors'}"></h4>
                                 <div class="table-responsive">
                                     <table class="table user-table table-hover">
                                         <thead>
@@ -121,170 +144,47 @@
                                             <th class="border-top-0">Names</th>
                                             <th class="border-top-0">Colours</th>
                                             <th class="border-top-0">Number</th>
+                                            <th class="border-top-0"></th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>1</td>
+                                        <tbody id="tableBody">
+                                        <tr th:each="competitor, iterStat : *{competitors}">
                                             <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="James Murr"
-                                                               class="form-control ps-0 form-control-line">
+                                                <span th:text="${competitor.lineup}" class="lineup"/>
+                                                <input th:field="*{competitors[__${iterStat.index}__].id}" type="hidden" th:value="${competitor.id}">
+                                                <input th:field="*{competitors[__${iterStat.index}__].lineup}" type="hidden" th:value="${competitor.lineup}">
+                                            </td>
+                                            <td>
+                                                <div th:each="name, iterStat2 : ${competitor.names}" class="form-group">
+                                                    <div class="col-sm-12 d-flex">
+                                                        <input type="text" th:field="*{competitors[__${iterStat.index}__].names[__${iterStat2.index}__]}" th:value="${name}" placeholder="Competitor name" class="form-control ps-0 form-control-line">
+                                                        <input type="button" th:if="${!iterStat2.first}" class="btn btn-danger mx-auto mx-md-0 text-white" onclick="deleteName(this)" value="X">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="col-md-12">
-                                                        <input type="text" value="Tina Lucas"
-                                                               class="form-control ps-0 form-control-line">
+                                                        <input type="button" class="btn btn-warning mx-auto mx-md-0 text-white" th:onclick="'addName(' + ${iterStat.index} + ', ' + ${competitor.names.size} + ', this)'" value="Add Name">
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
                                                     <div class="col-md-12">
-                                                        <input type="text" value="Yellow Polka Dots/ White"
-                                                               class="form-control ps-0 form-control-line">
+                                                        <input type="text" th:field="*{competitors[__${iterStat.index}__].colours}" th:value="${competitor.colours}" placeholder="Colours" class="form-control ps-0 form-control-line">
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
                                                     <div class="col-md-12">
-                                                        <input type="text" value="701"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Anthony Dorez"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Christina Moon"
-                                                               class="form-control ps-0 form-control-line">
+                                                        <input type="text" th:field="*{competitors[__${iterStat.index}__].number}" th:value="${competitor.number}" placeholder="Number" class="form-control ps-0 form-control-line">
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
                                                     <div class="col-md-12">
-                                                        <input type="text" value="Purple Dress & Black Suits"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="702"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Alfred Hones"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Nicola Santez"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Pink and Yellow"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="703"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Brandon Smith"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Fergie Loades"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Black with Grey Stripes"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="704"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Chris Luck"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Penelope Pine"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="Blue and Gold Dress"
-                                                               class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" value="705"
-                                                               class="form-control ps-0 form-control-line">
+                                                        <input type="button" class="btn btn-danger mx-auto mx-md-0 text-white" onclick="deleteCompetitor(this)" value="Delete">
                                                     </div>
                                                 </div>
                                             </td>
@@ -294,6 +194,9 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 d-flex">
+                                        <input type="button" class="btn btn-info mx-auto mx-md-0 text-white"
+                                               onclick="addCompetitor()" value="Add Competitor">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="button" class="btn btn-success mx-auto mx-md-0 text-white"
                                                onclick="validateForm()" value="Save">
                                     </div>
@@ -349,12 +252,154 @@
 <script src="/js/sidebarmenu.js"></script>
 <!--Custom JavaScript -->
 <script src="/js/custom.js"></script>
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+/*
+    $(document).ready(
+        function () {
+            competitionChange();
+        }
+    );*/
+
+    function competitionChange() {
+        const competition = $("#competition");
+        const section = $("#section");
+        const title = $("#table_title");
+        const url = "/marshall/sections?competition_id=" + competition.val();
+
+        $.get(url, function (data) {
+            section.empty();
+            $.each(data, function (index, item) {
+                if (index == 0)
+                    section.append("<option value='" + Object.keys(item) + "' selected='selected'>" + Object.values(item) + "</option>");
+                else
+                    section.append("<option value='" + Object.keys(item) + "'>" + Object.values(item) + "</option>");
+            });
+            title.text("Section " + $("#section option:selected").text() + " Competitors");
+
+            $.get("/marshall/competitors?section_id=" + $("#section option:selected").val(), function (data2) {
+                $("#tableBody").empty();
+                $.each(data2, function (index2, item2) {
+                    addCompetitor(index2, item2);
+                });
+            });
+        });
+    }
+
+    function sectionChange() {
+        $("#table_title").text("Section " + $("#section option:selected").text() + " Competitors");
+
+        const url = "/marshall/competitors?section_id=" + $("#section option:selected").val();
+
+        $.get(url, function (data) {
+            $("#tableBody").empty();
+            $.each(data, function (index, item) {
+                addCompetitor(index, item);
+            });
+        });
+    }
+
+    function addCompetitor(cIndex, competitor) {
+        let lineup = $(".lineup").length + 1;
+        let nameHtml =
+            '<div class="form-group">\n' +
+            '  <div class="col-sm-12 d-flex">\n' +
+            '    <input type="text" name="competitors' + cIndex + '.names0" id="competitors' + cIndex + '.names0" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n' +
+            '  </div>\n' +
+            '</div>';
+        let colours = "";
+        let number = "";
+        let nIndex = 0;
+
+        if (competitor) {
+            lineup = competitor.lineup;
+            if (competitor.names) {
+                nIndex = competitor.names.length;
+                nameHtml = '';
+                $.each(competitor.names, function (index, name) {
+                    nameHtml +=
+                        '<div class="form-group">\n' +
+                        '  <div class="col-sm-12 d-flex">\n' +
+                        '    <input type="text" name="competitors' + cIndex + '.names' + index + '" id="competitors' + cIndex + '.names' + index + '" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n';
+                    if (index != 0)
+                        nameHtml += '<input type="button" class="btn btn-danger mx-auto mx-md-0 text-white" onclick="deleteName(this)" value="X">\n';
+                    nameHtml += '  </div>\n' +
+                        '</div>';
+                });
+            }
+            colours = competitor.colours;
+            number = competitor.number;
+        }
+
+        const competitorHtml =
+            '<tr>\n' +
+            '  <td>' +
+            '    <span class="lineup">' + lineup + '</span>' +
+            '    <input name="competitors' + cIndex + '.id" id="competitors' + cIndex + '.id" type="hidden" value="' + competitor.id + '">' +
+            '    <input name="competitors' + cIndex + '.lineup" id="competitors' + cIndex + '.lineup" type="hidden" value="' + lineup + '">' +
+            '  </td>\n' +
+            '  <td>\n' + nameHtml +
+            '    <div class="form-group">\n' +
+            '      <div class="col-md-12">\n' +
+            '        <input type="button" class="btn btn-warning mx-auto mx-md-0 text-white" onclick="addName(' + cIndex + ', ' + nIndex + ', this)" value="Add Name">\n' +
+            '      </div>\n' +
+            '    </div>\n' +
+            '  </td>\n' +
+            '  <td>\n' +
+            '    <div class="form-group">\n' +
+            '      <div class="col-md-12">\n' +
+            '        <input type="text" name="competitors' + cIndex + '.colours" id="competitors' + cIndex + '.colours" placeholder="Colours" value="' + colours + '" class="form-control ps-0 form-control-line">\n' +
+            '      </div>\n' +
+            '    </div>\n' +
+            '  </td>\n' +
+            '  <td>\n' +
+            '    <div class="form-group">\n' +
+            '      <div class="col-md-12">\n' +
+            '        <input type="text" name="competitors' + cIndex + '.number" id="competitors' + cIndex + '.number" placeholder="Number" value="' + number + '" class="form-control ps-0 form-control-line">\n' +
+            '      </div>\n' +
+            '    </div>\n' +
+            '  </td>\n' +
+            '  <td>\n' +
+            '    <div class="form-group">\n' +
+            '      <div class="col-md-12">\n' +
+            '        <input type="button" class="btn btn-danger mx-auto mx-md-0 text-white" onclick="deleteCompetitor(this)" value="Delete">\n' +
+            '      </div>\n' +
+            '    </div>\n' +
+            '  </td>\n' +
+            '</tr>';
+
+        $("#tableBody").append(competitorHtml);
+    }
+
+    function deleteCompetitor(clickedButton) {
+        $(clickedButton).parent().parent().parent().parent().remove();
+        $.each($(".lineup"), function (index, item) {
+            $(item).text(index + 1);
+        });
+    }
+
+    function addName(cIndex, nIndex, clickedButton) {
+        const nameHtml =
+            '<div class="form-group">\n' +
+            '  <div class="col-sm-12 d-flex">\n' +
+            '    <input type="text" name="competitors' + cIndex + '.names' + nIndex + '" id="competitors' + cIndex + '.names' + nIndex + '" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n' +
+            '    <input type="button" class="btn btn-danger mx-auto mx-md-0 text-white" onclick="deleteName(this)" value="X">\n' +
+            '  </div>\n' +
+            '</div>';
+        $(nameHtml).insertBefore($(clickedButton).parent().parent());
+    }
+
+    function deleteName(clickedButton) {
+        $(clickedButton).parent().parent().remove();
+    }
+
     function validateForm() {
         const form = $("#marshallForm");
 
         form.submit();
     }
+
+    /*]]>*/
 </script>
 </body>
 

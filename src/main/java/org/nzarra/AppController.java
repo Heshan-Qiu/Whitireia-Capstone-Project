@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class AppController {
@@ -34,14 +31,18 @@ public class AppController {
 
     private final SectionRepository sectionRepository;
 
+    private final CompetitorRepository competitorRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public AppController(UserRepository userRepository, CompetitionRepository competitionRepository,
-                         SectionRepository sectionRepository, BCryptPasswordEncoder passwordEncoder) {
+                         SectionRepository sectionRepository, CompetitorRepository competitorRepository,
+                         BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.competitionRepository = competitionRepository;
         this.sectionRepository = sectionRepository;
+        this.competitorRepository = competitorRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -104,7 +105,7 @@ public class AppController {
         User emptyUser = new User();
         emptyUser.setActive(true);
         model.addAttribute("user", emptyUser);
-        model.addAttribute("message", "Added user successfully!");
+        model.addAttribute("message", "Add user successfully!");
 
         return "user_add";
     }
@@ -132,7 +133,7 @@ public class AppController {
         competitionRepository.save(competition);
 
         initCompetitionFormData(model);
-        model.addAttribute("message", "Added competition successfully!");
+        model.addAttribute("message", "Add competition successfully!");
 
         return "competition_add";
     }
@@ -201,15 +202,99 @@ public class AppController {
     }
 
     @GetMapping(value = "/marshall/home")
-    public String marshallHome() {
+    public String marshallHome(Authentication authentication, Model model) {
+        initMarshallFormData(authentication, model);
         return "marshall_home";
     }
 
     @PostMapping(value = "/marshall/add")
-    public String marshallAdd(Model model) {
+    public String marshallAdd(Authentication authentication, Model model, @ModelAttribute MarshallForm marshallForm) {
+        logger.debug("All params: " + marshallForm);
+
+        Optional<Section> optionalSection = sectionRepository.findById(marshallForm.getSectionId());
+        if (optionalSection.isPresent()) {
+            Section section = optionalSection.get();
+            section.setCompetitors(marshallForm.getCompetitors());
+            logger.debug("执行到这里");
+            sectionRepository.saveAndFlush(section);
+        }
+
+        initMarshallFormData(authentication, model);
         model.addAttribute("message", "Save data successfully!");
 
         return "marshall_home";
+    }
+
+    private void initMarshallFormData(Authentication authentication, Model model) {
+        List<Competition> competitions = competitionRepository.findAllByMarshallAndActive(authentication.getName(), true);
+        model.addAttribute("competitions", competitions);
+
+        List<Section> formSections = new ArrayList<>();
+        MarshallForm marshallForm = new MarshallForm();
+        String sectionName = null;
+
+        if (!competitions.isEmpty()) {
+            Competition competition = competitions.get(0);
+
+            List<Section> sections = competition.getSectionList();
+            if (!sections.isEmpty()) {
+                formSections = sections;
+                Section section = sections.get(0);
+                marshallForm.setSectionId(section.getId());
+                sectionName = section.getName();
+
+                List<Competitor> competitors = section.getCompetitors();
+                if (!competitors.isEmpty()) {
+                    logger.debug("执行到这里2");
+                    List<Competitor> formCompetitors = new ArrayList<>();
+                    for (Competitor competitor : competitors) {
+                        logger.debug("测试：" + competitor);
+                        formCompetitors.add(new Competitor(competitor.getId(), competitor.getLineup(),
+                                competitor.getNames(), competitor.getColours(), competitor.getNumber()));
+                    }
+                    marshallForm.setCompetitors(formCompetitors);
+                }
+            }
+        }
+
+        model.addAttribute("sections", formSections);
+        model.addAttribute("sectionName", sectionName);
+        model.addAttribute("marshallForm", marshallForm);
+        logger.debug("Form: " + marshallForm.getCompetitors());
+    }
+
+    @GetMapping(value = "/marshall/sections")
+    @ResponseBody
+    public List<AbstractMap.SimpleEntry<Integer, String>> marshallSections(@RequestParam("competition_id") Integer competitionId) {
+        Optional<Competition> optionalCompetition = competitionRepository.findById(competitionId);
+
+        if (optionalCompetition.isPresent()) {
+            List<Section> sections = sectionRepository.findAllByCompetitionAndActive(optionalCompetition.get(), true);
+            List<AbstractMap.SimpleEntry<Integer, String>> returnList = new ArrayList<>();
+            for (Section section : sections) {
+                returnList.add(new AbstractMap.SimpleEntry<>(section.getId(), section.getName()));
+            }
+
+            return returnList;
+        }
+
+        return null;
+    }
+
+    @GetMapping(value = "/marshall/competitors")
+    @ResponseBody
+    public List<Competitor> marshallCompetitors(@RequestParam("section_id") Integer sectionId) {
+        Optional<Section> sectionOptional = sectionRepository.findById(sectionId);
+        if (sectionOptional.isPresent()) {
+            Section section = sectionOptional.get();
+            List<Competitor> competitors = new ArrayList<>();
+            for (Competitor competitor : section.getCompetitors())
+                competitors.add(new Competitor(competitor.getId(), competitor.getLineup(), competitor.getNames(), competitor.getColours(), competitor.getNumber()));
+
+            return competitors;
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @GetMapping(value = "/admin/sections")
@@ -240,7 +325,7 @@ public class AppController {
         sectionRepository.save(section);
 
         initSectionFormData(section.getCompetition().getId(), model);
-        model.addAttribute("message", "Added section successfully!");
+        model.addAttribute("message", "Add section successfully!");
 
         return "section_add";
     }
