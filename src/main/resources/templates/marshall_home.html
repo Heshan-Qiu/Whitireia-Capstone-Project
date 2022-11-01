@@ -311,7 +311,7 @@
                     nameHtml +=
                         '<div class="form-group">\n' +
                         '  <div class="col-sm-12 d-flex">\n' +
-                        '    <input type="text" name="competitors[' + cIndex + '].names[' + index + ']" id="competitors' + cIndex + '.names' + index + '" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n';
+                        '    <input type="text" name="competitors[' + cIndex + '].names[' + index + ']" id="competitors' + cIndex + '.names' + index + '" value="' + name + '" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n';
                     if (index != 0)
                         nameHtml += '<input type="button" class="btn btn-danger mx-auto mx-md-0 text-white" onclick="deleteName(this)" value="X">\n';
                     nameHtml += '  </div>\n' +
