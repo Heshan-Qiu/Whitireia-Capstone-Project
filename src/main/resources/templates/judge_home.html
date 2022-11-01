@@ -110,24 +110,25 @@
                 <div class="card-body">
                     <h4 class="card-title"
                         th:text="${'You are now activate to Judge Section ' + section.name + ' - ' + competitionName}"/>
-                    <form th:action="@{/judge/add}" method="post" id="judgeForm" onsubmit="validateForm()"
+                    <form th:action="@{/judge/add}" method="post" th:object="${judgeForm}" id="judgeForm" onsubmit="return validateForm(event)"
                           class="form-horizontal form-material mx-2">
                         <div class="table-responsive">
+                            <input type="hidden" th:field="*{sectionId}">
                             <table class="table user-table table-hover">
                                 <thead>
                                 <tr>
-                                    <th class="border-top-0">Colours</th>
-                                    <th class="border-top-0">Number</th>
+                                    <th style="width: 15%;" class="border-top-0">Colours</th>
+                                    <th style="width: 10%;" class="border-top-0">Number</th>
                                     <th class="border-top-0" style="width: 25%; white-space: nowrap;">Competitors</th>
-                                    <th class="border-top-0">Variety</th>
-                                    <th class="border-top-0">Timing</th>
-                                    <th class="border-top-0">Harmony</th>
-                                    <th class="border-top-0">Total</th>
-                                    <th class="border-top-0">Placing</th>
+                                    <th style="width: 10%;" class="border-top-0">Variety</th>
+                                    <th style="width: 10%;" class="border-top-0">Timing</th>
+                                    <th style="width: 10%;" class="border-top-0">Harmony</th>
+                                    <th style="width: 10%;" class="border-top-0">Total</th>
+                                    <th style="width: 10%;" class="border-top-0">Placing</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="competitor, iterStat : ${section.competitors}">
+                                <tr th:each="score, iterStat : ${judgeForm.scores}">
                                     <td>
                                         <img th:if="${iterStat.index % 5 == 0}" src="/images/couple1.jpg" width="50"
                                              height="50">
@@ -140,45 +141,53 @@
                                         <img th:if="${iterStat.index % 5 == 4}" src="/images/couple5.jpg" width="50"
                                              height="50">
                                     </td>
-                                    <td th:text="${competitor.number}"></td>
+                                    <td th:text="${score.competitor.number}"></td>
                                     <td>
-                                                <span th:each="name, iterStat2 : ${competitor.names}">
-                                                    <span class="no-wrap" th:text="${name}"/><br
-                                                        th:if="${!iterStat2.last}"/>
-                                                </span>
+                                        <span th:each="name, iterStat2 : ${score.competitor.names}">
+                                            <span class="no-wrap" th:text="${name}"/><br th:if="${!iterStat2.last}"/>
+                                        </span>
+                                        <input type="hidden" th:field="*{scores[__${iterStat.index}__].competitor}">
                                     </td>
                                     <td>
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <input type="number" min="1" max="10" class="form-control ps-0 form-control-line">
+                                                <input type="number" th:field="*{scores[__${iterStat.index}__].variety}"
+                                                       min="1" max="10" onchange="scoreChange(this)"
+                                                       class="form-control ps-0 form-control-line">
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <input type="number" min="1" max="10" class="form-control ps-0 form-control-line">
+                                                <input type="number" th:field="*{scores[__${iterStat.index}__].timing}"
+                                                       min="1" max="10" onchange="scoreChange(this)"
+                                                       class="form-control ps-0 form-control-line">
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <input type="number" min="1" max="10" class="form-control ps-0 form-control-line">
+                                                <input type="number" th:field="*{scores[__${iterStat.index}__].harmony}"
+                                                       min="1" max="10" onchange="scoreChange(this)"
+                                                       class="form-control ps-0 form-control-line">
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <input type="number" readonly="readonly" class="form-control ps-0 form-control-line">
+                                                <input type="number" th:field="*{scores[__${iterStat.index}__].total}"
+                                                       readonly="readonly" class="form-control ps-0 form-control-line">
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <input type="number" min="1" th:max="${iterStat.size}" class="form-control ps-0 form-control-line">
+                                                <input type="number" th:field="*{scores[__${iterStat.index}__].placing}"
+                                                       min="1" th:max="${iterStat.size}" class="form-control ps-0 form-control-line">
                                             </div>
                                         </div>
                                     </td>
@@ -239,8 +248,29 @@
 <!--Custom JavaScript -->
 <script src="/js/custom.js"></script>
 <script>
-    function validateForm() {
+    function validateForm(event) {
         const form = $("#judgeForm");
+
+        $.each($("input[type='number']"), function (index, item) {
+            if (!$.isNumeric($(item).val())) {
+                event.preventDefault();
+                alert("Please input a correct number.");
+                $(item).focus();
+                return false;
+            }
+        });
+    }
+
+    function scoreChange(changedInput) {
+        let inputName = $(changedInput).attr("name");
+        let prefix = inputName.substring(0, inputName.indexOf("."));
+        let total = $("input[name='" + prefix + ".total']");
+        let variety = $("input[name='" + prefix + ".variety']");
+        let timing = $("input[name='" + prefix + ".timing']");
+        let harmony = $("input[name='" + prefix + ".harmony']");
+
+        if ($.isNumeric(variety.val()) && $.isNumeric(timing.val()) && $.isNumeric(harmony.val()))
+            total.val(parseInt(variety.val()) + parseInt(timing.val()) + parseInt(harmony.val()));
     }
 </script>
 </body>

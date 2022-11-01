@@ -34,16 +34,19 @@ public class AppController {
 
     private final CompetitorRepository competitorRepository;
 
+    private final ScoreRepository scoreRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public AppController(UserRepository userRepository, CompetitionRepository competitionRepository,
                          SectionRepository sectionRepository, CompetitorRepository competitorRepository,
-                         BCryptPasswordEncoder passwordEncoder) {
+                         ScoreRepository scoreRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.competitionRepository = competitionRepository;
         this.sectionRepository = sectionRepository;
         this.competitorRepository = competitorRepository;
+        this.scoreRepository = scoreRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -185,6 +188,34 @@ public class AppController {
 
     @GetMapping(value = "/judge/home")
     public String judgeHome(Authentication authentication, Model model) {
+        if (!initJudgeFormData(authentication, model))
+            model.addAttribute("message", "You don't have any section to score.");
+
+        return "judge_home";
+    }
+
+    @PostMapping(value = "/judge/add")
+    public String judgeAdd(Authentication authentication, Model model, @ModelAttribute JudgeForm judgeForm) {
+        Optional<Section> optionalSection = sectionRepository.findById(judgeForm.getSectionId());
+        Optional<User> judge = userRepository.findByUsername(authentication.getName());
+
+        if (optionalSection.isPresent() && judge.isPresent()) {
+            for (Score score : judgeForm.getScores()) {
+                if (score.getVariety() != null && score.getTiming() != null && score.getHarmony() != null &&
+                        score.getTotal() != null && score.getPlacing() != null) {
+                    score.setSection(optionalSection.get());
+                    score.setJudge(judge.get());
+                    scoreRepository.save(score);
+                }
+            }
+        }
+
+        model.addAttribute("message", "Save data successfully!");
+
+        return "judge_home";
+    }
+
+    private boolean initJudgeFormData(Authentication authentication, Model model) {
         Optional<Competition> competition = competitionRepository.findFirstByJudgesInAndActiveOrderByDateDesc(
                 List.of(authentication.getName()), true);
         boolean found = false;
@@ -193,24 +224,20 @@ public class AppController {
                     competition.get(), true);
             if (section.isPresent()) {
                 found = true;
-                logger.debug("Section: " + section.get().getName());
-                logger.debug("Competition: " + competition.get().getName());
+
+                List<Score> scores = new ArrayList<>();
+                for (Competitor competitor : section.get().getCompetitors())
+                    scores.add(new Score(competitor));
+
+                JudgeForm judgeForm = new JudgeForm(section.get().getId(), scores);
+
+                model.addAttribute("judgeForm", judgeForm);
                 model.addAttribute("section", section.get());
                 model.addAttribute("competitionName", competition.get().getName());
             }
         }
 
-        if (!found)
-            model.addAttribute("message", "You don't have any section to score.");
-
-        return "judge_home";
-    }
-
-    @PostMapping(value = "/judge/add")
-    public String judgeAdd(Model model) {
-        model.addAttribute("message", "Save data successfully!");
-
-        return "judge_home";
+        return found;
     }
 
     @GetMapping(value = "/scrutineer/home")
