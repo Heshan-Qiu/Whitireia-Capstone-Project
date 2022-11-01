@@ -66,7 +66,8 @@
             <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
                 <ul class="navbar-nav me-auto mt-md-0">
                     <li class="nav-item">
-                        <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Judge Sheet</h4>
+                        <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Judge
+                            Sheet</h4>
                     </li>
                 </ul>
                 <!-- ============================================================== -->
@@ -100,266 +101,99 @@
             <!-- ============================================================== -->
             <!-- Start Page Content -->
             <!-- ============================================================== -->
-            <!-- Row -->
-            <div class="row">
-                <!-- Column -->
-                <div class="col-lg-8 col-xlg-9 col-md-7">
-                    <div th:if="${message}" class="card">
-                        <div class="card-body" style="text-align: center;">
-                            <h6 th:text="${message}" class="card-title mt-2" style="color: orange"/>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">You are now activate to Judge Section 1 - Best Dress</h4>
-                            <form th:action="@{/judge/add}" method="post" id="judgeForm"
-                                  class="form-horizontal form-material mx-2">
-                                <div class="table-responsive">
-                                    <table class="table user-table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th class="border-top-0">Colours</th>
-                                            <th class="border-top-0">Number</th>
-                                            <th class="border-top-0">Competitors</th>
-                                            <th class="border-top-0">Variety</th>
-                                            <th class="border-top-0">Timing</th>
-                                            <th class="border-top-0">Harmony</th>
-                                            <th class="border-top-0">Total</th>
-                                            <th class="border-top-0">Placing</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td><img src="/images/couple1.jpg" width="50" height="50"></td>
-                                            <td>701</td>
-                                            <td>
-                                                James Murr<br>
-                                                Tina Lucas
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="/images/couple2.png" width="50" height="50"></td>
-                                            <td>702</td>
-                                            <td>
-                                                Andrea Costlow<br>
-                                                Peter O'Mahonny
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="/images/couple3.jpg" width="50" height="50"></td>
-                                            <td>703</td>
-                                            <td>
-                                                Linda Murr<br>
-                                                Tommy Lowe
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="/images/couple4.png" width="50" height="50"></td>
-                                            <td>704</td>
-                                            <td>
-                                                Candy Harper<br>
-                                                Thomas Further
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="/images/couple5.jpg" width="50" height="50"></td>
-                                            <td>705</td>
-                                            <td>
-                                                Carina Adocar<br>
-                                                Freddy Hunz
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <div class="col-md-12">
-                                                        <input type="text" class="form-control ps-0 form-control-line">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-12 d-flex">
-                                        <input type="button" class="btn btn-success mx-auto mx-md-0 text-white"
-                                               onclick="validateForm()" value="Save">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+            <div th:if="${message}" class="card">
+                <div class="card-body" style="text-align: center;">
+                    <h6 th:text="${message}" class="card-title mt-2" style="color: orange"/>
                 </div>
-                <!-- Column -->
             </div>
-            <!-- Row -->
+            <div class="card" th:if="${section}">
+                <div class="card-body">
+                    <h4 class="card-title"
+                        th:text="${'You are now activate to Judge Section ' + section.name + ' - ' + competitionName}"/>
+                    <form th:action="@{/judge/add}" method="post" id="judgeForm" onsubmit="validateForm()"
+                          class="form-horizontal form-material mx-2">
+                        <div class="table-responsive">
+                            <table class="table user-table table-hover">
+                                <thead>
+                                <tr>
+                                    <th class="border-top-0">Colours</th>
+                                    <th class="border-top-0">Number</th>
+                                    <th class="border-top-0" style="width: 25%; white-space: nowrap;">Competitors</th>
+                                    <th class="border-top-0">Variety</th>
+                                    <th class="border-top-0">Timing</th>
+                                    <th class="border-top-0">Harmony</th>
+                                    <th class="border-top-0">Total</th>
+                                    <th class="border-top-0">Placing</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="competitor, iterStat : ${section.competitors}">
+                                    <td>
+                                        <img th:if="${iterStat.index % 5 == 0}" src="/images/couple1.jpg" width="50"
+                                             height="50">
+                                        <img th:if="${iterStat.index % 5 == 1}" src="/images/couple2.png" width="50"
+                                             height="50">
+                                        <img th:if="${iterStat.index % 5 == 2}" src="/images/couple3.jpg" width="50"
+                                             height="50">
+                                        <img th:if="${iterStat.index % 5 == 3}" src="/images/couple4.png" width="50"
+                                             height="50">
+                                        <img th:if="${iterStat.index % 5 == 4}" src="/images/couple5.jpg" width="50"
+                                             height="50">
+                                    </td>
+                                    <td th:text="${competitor.number}"></td>
+                                    <td>
+                                                <span th:each="name, iterStat2 : ${competitor.names}">
+                                                    <span class="no-wrap" th:text="${name}"/><br
+                                                        th:if="${!iterStat2.last}"/>
+                                                </span>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <input type="number" min="1" max="10" class="form-control ps-0 form-control-line">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <input type="number" min="1" max="10" class="form-control ps-0 form-control-line">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <input type="number" min="1" max="10" class="form-control ps-0 form-control-line">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <input type="number" readonly="readonly" class="form-control ps-0 form-control-line">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <input type="number" min="1" th:max="${iterStat.size}" class="form-control ps-0 form-control-line">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12 d-flex">
+                                <input type="submit" class="btn btn-success mx-auto mx-md-0 text-white" value="Save">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <!-- ============================================================== -->
             <!-- End Page Content -->
             <!-- ============================================================== -->
@@ -407,8 +241,6 @@
 <script>
     function validateForm() {
         const form = $("#judgeForm");
-
-        form.submit();
     }
 </script>
 </body>

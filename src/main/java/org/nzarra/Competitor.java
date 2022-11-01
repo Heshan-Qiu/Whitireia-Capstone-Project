@@ -14,7 +14,7 @@ public class Competitor {
     private Integer lineup;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "dancers", joinColumns = @JoinColumn (name = "id"))
+    @CollectionTable(name = "competitor_name", joinColumns = @JoinColumn (name = "id"))
     private List<String> names;
 
     private String colours;

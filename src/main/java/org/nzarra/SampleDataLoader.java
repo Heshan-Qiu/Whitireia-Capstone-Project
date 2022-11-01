@@ -97,28 +97,41 @@ public class SampleDataLoader implements CommandLineRunner {
         scrutineers2.forEach((scrutineer) -> scrutineerNames.add(scrutineer.getUsername()));
         List<Competition> competitions = IntStream.rangeClosed(1, 20).mapToObj(
                 i -> new Competition(faker.funnyName().name(), faker.date().between(from, to),
-                        faker.address().fullAddress(), faker.number().numberBetween(1, 5), judgeNames, scrutineerNames,
+                        faker.address().fullAddress(), faker.random().nextInt(1, 5), judgeNames, scrutineerNames,
                         marshall2.getUsername(), faker.bool().bool())).toList();
         competitionRepository.saveAll(competitions);
 
+        Time time = new Time(new Date().getTime());
+
         List<Competition> marshallCompetitions = IntStream.rangeClosed(1, 3).mapToObj(
                 i -> new Competition(faker.funnyName().name(), faker.date().between(from, to),
-                        faker.address().fullAddress(), faker.number().numberBetween(1, 5), judgeNames, scrutineerNames,
+                        faker.address().fullAddress(), faker.random().nextInt(1, 5), judgeNames, scrutineerNames,
                         "2", true)).toList();
         competitionRepository.saveAll(marshallCompetitions);
         for (Competition competition : marshallCompetitions) {
-            Time time = new Time(new Date().getTime());
-            List<Section> sections = IntStream.rangeClosed(1, 4).mapToObj(i -> new Section(faker.number().randomDigit(),
+            List<Section> sections = IntStream.rangeClosed(1, 4).mapToObj(i -> new Section(faker.random().nextInt(1, 10),
                     faker.funnyName().name(), time, faker.funnyName().name(), Boolean.TRUE, competition)).toList();
             sectionRepository.saveAll(sections);
 
             for (Section section : sections) {
                 List<Competitor> competitors = IntStream.rangeClosed(1, 4).mapToObj(i -> new Competitor(
-                        faker.number().randomDigit(), IntStream.rangeClosed(1, 3).mapToObj(
-                                j -> faker.name().fullName()).toList(), faker.color().name(), faker.number().digit(),
-                        section)).toList();
+                        faker.random().nextInt(1, 10), IntStream.rangeClosed(1, 2).mapToObj(
+                                j -> faker.name().fullName()).toList(), faker.color().name(),
+                        String.valueOf(faker.random().nextInt(100, 999)), section)).toList();
                 competitorRepository.saveAll(competitors);
             }
         }
+
+        Competition judgeCompetition = new Competition(faker.funnyName().name(), faker.date().between(from, to),
+                faker.address().fullAddress(), faker.random().nextInt(1, 5), List.of("1"), scrutineerNames,
+                "2", true);
+        competitionRepository.save(judgeCompetition);
+        Section judgeSection = new Section(faker.random().nextInt(1, 10), faker.funnyName().name(), time,
+                faker.funnyName().name(), true, judgeCompetition);
+        sectionRepository.save(judgeSection);
+        List<Competitor> judgeCompetitors = IntStream.rangeClosed(1, 5).mapToObj(i -> new Competitor(
+                faker.random().nextInt(1, 10), IntStream.rangeClosed(1, 2).mapToObj(j -> faker.name().fullName()).toList(),
+                faker.color().name(), String.valueOf(faker.random().nextInt(100, 999)), judgeSection)).toList();
+        competitorRepository.saveAll(judgeCompetitors);
     }
 }

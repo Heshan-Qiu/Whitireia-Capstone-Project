@@ -245,13 +245,13 @@
                     <td th:text="${competition.location}"></td>
                     <td><a th:href="@{${'/admin/sections?competition_id=' + competition.id}}" th:text="${competition.sections}"/></td>
                     <td>
-                      <span th:each="judge : ${competition.judges}">
-                        <span th:text="${judge}"/><br th:if="${competition.judges.size} > 1"/>
+                      <span th:each="judge, iterStat2 : ${competition.judges}">
+                        <span th:text="${judge}"/><br th:if="${!iterStat2.last}"/>
                       </span>
                     </td>
                     <td>
-                      <span th:each="scrutineer : ${competition.scrutineers}">
-                        <span th:text="${scrutineer}"/><br th:if="${competition.scrutineers.size} > 1"/>
+                      <span th:each="scrutineer, iterStat2 : ${competition.scrutineers}">
+                        <span th:text="${scrutineer}"/><br th:if="${!iterStat2.last}"/>
                       </span>
                     </td>
                     <td th:text="${competition.marshall}"></td>

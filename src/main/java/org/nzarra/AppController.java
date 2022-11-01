@@ -184,7 +184,25 @@ public class AppController {
     }
 
     @GetMapping(value = "/judge/home")
-    public String judgeHome() {
+    public String judgeHome(Authentication authentication, Model model) {
+        Optional<Competition> competition = competitionRepository.findFirstByJudgesInAndActiveOrderByDateDesc(
+                List.of(authentication.getName()), true);
+        boolean found = false;
+        if (competition.isPresent()) {
+            Optional<Section> section = sectionRepository.findFirstByCompetitionAndActiveOrderByTimeDesc(
+                    competition.get(), true);
+            if (section.isPresent()) {
+                found = true;
+                logger.debug("Section: " + section.get().getName());
+                logger.debug("Competition: " + competition.get().getName());
+                model.addAttribute("section", section.get());
+                model.addAttribute("competitionName", competition.get().getName());
+            }
+        }
+
+        if (!found)
+            model.addAttribute("message", "You don't have any section to score.");
+
         return "judge_home";
     }
 
