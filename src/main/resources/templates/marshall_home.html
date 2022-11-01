@@ -163,7 +163,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="col-md-12">
-                                                        <input type="button" class="btn btn-warning mx-auto mx-md-0 text-white" th:onclick="'addName(' + ${iterStat.index} + ', ' + ${competitor.names.size} + ', this)'" value="Add Name">
+                                                        <input type="button" class="btn btn-warning mx-auto mx-md-0 text-white" th:onclick="'addName(' + ${iterStat.index} + ', this)'" value="Add Name">
                                                     </div>
                                                 </div>
                                             </td>
@@ -195,7 +195,7 @@
                                 <div class="form-group">
                                     <div class="col-sm-12 d-flex">
                                         <input type="button" class="btn btn-info mx-auto mx-md-0 text-white"
-                                               onclick="addCompetitor()" value="Add Competitor">
+                                               onclick="addCompetitor(null)" value="Add Competitor">
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="button" class="btn btn-success mx-auto mx-md-0 text-white"
                                                onclick="validateForm()" value="Save">
@@ -253,14 +253,6 @@
 <!--Custom JavaScript -->
 <script src="/js/custom.js"></script>
 <script th:inline="javascript">
-    /*<![CDATA[*/
-/*
-    $(document).ready(
-        function () {
-            competitionChange();
-        }
-    );*/
-
     function competitionChange() {
         const competition = $("#competition");
         const section = $("#section");
@@ -280,7 +272,7 @@
             $.get("/marshall/competitors?section_id=" + $("#section option:selected").val(), function (data2) {
                 $("#tableBody").empty();
                 $.each(data2, function (index2, item2) {
-                    addCompetitor(index2, item2);
+                    addCompetitor(item2);
                 });
             });
         });
@@ -294,37 +286,36 @@
         $.get(url, function (data) {
             $("#tableBody").empty();
             $.each(data, function (index, item) {
-                addCompetitor(index, item);
+                addCompetitor(item);
             });
         });
     }
 
-    function addCompetitor(cIndex, competitor) {
+    function addCompetitor(competitor) {
+        const cIndex = $(".lineup").length;
         let lineup = $(".lineup").length + 1;
         let nameHtml =
             '<div class="form-group">\n' +
             '  <div class="col-sm-12 d-flex">\n' +
-            '    <input type="text" name="competitors' + cIndex + '.names0" id="competitors' + cIndex + '.names0" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n' +
+            '    <input type="text" name="competitors[' + cIndex + '].names[0]" id="competitors' + cIndex + '.names0" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n' +
             '  </div>\n' +
             '</div>';
         let colours = "";
         let number = "";
-        let nIndex = 0;
 
         if (competitor) {
             lineup = competitor.lineup;
             if (competitor.names) {
-                nIndex = competitor.names.length;
                 nameHtml = '';
                 $.each(competitor.names, function (index, name) {
                     nameHtml +=
                         '<div class="form-group">\n' +
                         '  <div class="col-sm-12 d-flex">\n' +
-                        '    <input type="text" name="competitors' + cIndex + '.names' + index + '" id="competitors' + cIndex + '.names' + index + '" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n';
+                        '    <input type="text" name="competitors[' + cIndex + '].names[' + index + ']" id="competitors' + cIndex + '.names' + index + '" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n';
                     if (index != 0)
                         nameHtml += '<input type="button" class="btn btn-danger mx-auto mx-md-0 text-white" onclick="deleteName(this)" value="X">\n';
                     nameHtml += '  </div>\n' +
-                        '</div>';
+                        '</div>\n';
                 });
             }
             colours = competitor.colours;
@@ -333,29 +324,29 @@
 
         const competitorHtml =
             '<tr>\n' +
-            '  <td>' +
-            '    <span class="lineup">' + lineup + '</span>' +
-            '    <input name="competitors' + cIndex + '.id" id="competitors' + cIndex + '.id" type="hidden" value="' + competitor.id + '">' +
-            '    <input name="competitors' + cIndex + '.lineup" id="competitors' + cIndex + '.lineup" type="hidden" value="' + lineup + '">' +
+            '  <td>\n' +
+            '    <span class="lineup">' + lineup + '</span>\n' +
+            '    <input name="competitors[' + cIndex + '].id" id="competitors' + cIndex + '.id" type="hidden" value="' + (competitor ? competitor.id : '') + '">\n' +
+            '    <input name="competitors[' + cIndex + '].lineup" id="competitors' + cIndex + '.lineup" type="hidden" value="' + lineup + '">\n' +
             '  </td>\n' +
             '  <td>\n' + nameHtml +
             '    <div class="form-group">\n' +
             '      <div class="col-md-12">\n' +
-            '        <input type="button" class="btn btn-warning mx-auto mx-md-0 text-white" onclick="addName(' + cIndex + ', ' + nIndex + ', this)" value="Add Name">\n' +
+            '        <input type="button" class="btn btn-warning mx-auto mx-md-0 text-white" onclick="addName(' + cIndex + ', this)" value="Add Name">\n' +
             '      </div>\n' +
             '    </div>\n' +
             '  </td>\n' +
             '  <td>\n' +
             '    <div class="form-group">\n' +
             '      <div class="col-md-12">\n' +
-            '        <input type="text" name="competitors' + cIndex + '.colours" id="competitors' + cIndex + '.colours" placeholder="Colours" value="' + colours + '" class="form-control ps-0 form-control-line">\n' +
+            '        <input type="text" name="competitors[' + cIndex + '].colours" id="competitors' + cIndex + '.colours" placeholder="Colours" value="' + colours + '" class="form-control ps-0 form-control-line">\n' +
             '      </div>\n' +
             '    </div>\n' +
             '  </td>\n' +
             '  <td>\n' +
             '    <div class="form-group">\n' +
             '      <div class="col-md-12">\n' +
-            '        <input type="text" name="competitors' + cIndex + '.number" id="competitors' + cIndex + '.number" placeholder="Number" value="' + number + '" class="form-control ps-0 form-control-line">\n' +
+            '        <input type="text" name="competitors[' + cIndex + '].number" id="competitors' + cIndex + '.number" placeholder="Number" value="' + number + '" class="form-control ps-0 form-control-line">\n' +
             '      </div>\n' +
             '    </div>\n' +
             '  </td>\n' +
@@ -366,7 +357,7 @@
             '      </div>\n' +
             '    </div>\n' +
             '  </td>\n' +
-            '</tr>';
+            '</tr>\n';
 
         $("#tableBody").append(competitorHtml);
     }
@@ -378,11 +369,12 @@
         });
     }
 
-    function addName(cIndex, nIndex, clickedButton) {
+    function addName(cIndex, clickedButton) {
+        const nIndex = $("input[name^='competitors[" + cIndex + "].names']").length;
         const nameHtml =
             '<div class="form-group">\n' +
             '  <div class="col-sm-12 d-flex">\n' +
-            '    <input type="text" name="competitors' + cIndex + '.names' + nIndex + '" id="competitors' + cIndex + '.names' + nIndex + '" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n' +
+            '    <input type="text" name="competitors[' + cIndex + '].names[' + nIndex + ']" id="competitors' + cIndex + '.names' + nIndex + '" placeholder="Competitor name" class="form-control ps-0 form-control-line">\n' +
             '    <input type="button" class="btn btn-danger mx-auto mx-md-0 text-white" onclick="deleteName(this)" value="X">\n' +
             '  </div>\n' +
             '</div>';
@@ -398,8 +390,6 @@
 
         form.submit();
     }
-
-    /*]]>*/
 </script>
 </body>
 

@@ -2,6 +2,7 @@ package org.nzarra;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Competitor {
@@ -40,6 +41,20 @@ public class Competitor {
         this.colours = colours;
         this.number = number;
         this.section = section;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Competitor competitor = (Competitor) obj;
+        return Objects.equals(id, competitor.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

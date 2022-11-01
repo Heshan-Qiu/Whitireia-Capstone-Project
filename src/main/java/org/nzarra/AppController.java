@@ -12,6 +12,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,7 +90,6 @@ public class AppController {
 
     @GetMapping(value = "/admin/users/add")
     public String userAddForm(Model model) {
-        logger.debug("Reach the user add get method.");
         User user = new User();
         user.setActive(true);
         model.addAttribute("user", user);
@@ -98,7 +98,6 @@ public class AppController {
 
     @PostMapping(value = "/admin/users/add")
     public String userAddSubmit(@ModelAttribute User user, Model model) {
-        logger.debug("Submit user: " + user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
@@ -208,15 +207,18 @@ public class AppController {
     }
 
     @PostMapping(value = "/marshall/add")
+    @Transactional
     public String marshallAdd(Authentication authentication, Model model, @ModelAttribute MarshallForm marshallForm) {
-        logger.debug("All params: " + marshallForm);
-
         Optional<Section> optionalSection = sectionRepository.findById(marshallForm.getSectionId());
         if (optionalSection.isPresent()) {
             Section section = optionalSection.get();
-            section.setCompetitors(marshallForm.getCompetitors());
-            logger.debug("执行到这里");
-            sectionRepository.saveAndFlush(section);
+            competitorRepository.deleteAllBySection(section);
+
+            if (marshallForm.getCompetitors() != null) {
+                for (Competitor competitor : marshallForm.getCompetitors())
+                    competitor.setSection(section);
+                competitorRepository.saveAll(marshallForm.getCompetitors());
+            }
         }
 
         initMarshallFormData(authentication, model);
@@ -230,29 +232,26 @@ public class AppController {
         model.addAttribute("competitions", competitions);
 
         List<Section> formSections = new ArrayList<>();
-        MarshallForm marshallForm = new MarshallForm();
+        MarshallForm marshallForm = new MarshallForm(null, new ArrayList<>());
         String sectionName = null;
 
         if (!competitions.isEmpty()) {
             Competition competition = competitions.get(0);
 
-            List<Section> sections = competition.getSectionList();
+            List<Section> sections = sectionRepository.findAllByCompetitionAndActive(competition, true);
             if (!sections.isEmpty()) {
                 formSections = sections;
                 Section section = sections.get(0);
                 marshallForm.setSectionId(section.getId());
                 sectionName = section.getName();
 
-                List<Competitor> competitors = section.getCompetitors();
+                List<Competitor> formCompetitors = marshallForm.getCompetitors();
+                List<Competitor> competitors = competitorRepository.findAllBySection(section);
                 if (!competitors.isEmpty()) {
-                    logger.debug("执行到这里2");
-                    List<Competitor> formCompetitors = new ArrayList<>();
                     for (Competitor competitor : competitors) {
-                        logger.debug("测试：" + competitor);
                         formCompetitors.add(new Competitor(competitor.getId(), competitor.getLineup(),
                                 competitor.getNames(), competitor.getColours(), competitor.getNumber()));
                     }
-                    marshallForm.setCompetitors(formCompetitors);
                 }
             }
         }
@@ -260,7 +259,6 @@ public class AppController {
         model.addAttribute("sections", formSections);
         model.addAttribute("sectionName", sectionName);
         model.addAttribute("marshallForm", marshallForm);
-        logger.debug("Form: " + marshallForm.getCompetitors());
     }
 
     @GetMapping(value = "/marshall/sections")
