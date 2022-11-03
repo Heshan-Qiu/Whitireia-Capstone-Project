@@ -133,5 +133,28 @@ public class SampleDataLoader implements CommandLineRunner {
                 faker.random().nextInt(1, 10), IntStream.rangeClosed(1, 2).mapToObj(j -> faker.name().fullName()).toList(),
                 faker.color().name(), String.valueOf(faker.random().nextInt(100, 999)), judgeSection)).toList();
         competitorRepository.saveAll(judgeCompetitors);
+
+        // Data for documents
+        User docJudge = new User("judge", passwordEncoder.encode("123456"), true,
+                "Judge Demo User", List.of(User.ROLE_JUDGE));
+        User docMarshall = new User("marshall", passwordEncoder.encode("123456"), true,
+                "Marshall Demo User", List.of(User.ROLE_MARSHALL));
+        User docScrutineer = new User("scrutineer", passwordEncoder.encode("123456"), true,
+                "Scrutineer Demo User", List.of(User.ROLE_SCRUTINEER));
+        userRepository.save(docJudge);
+        userRepository.save(docScrutineer);
+        userRepository.save(docMarshall);
+
+        Competition docCompetition = new Competition("Demo competition", new Date(), "Demo address", 1,
+                List.of(docJudge.getUsername()), List.of(docScrutineer.getUsername()), docMarshall.getUsername(), true);
+        Section docSection = new Section(1, "Demo section", new Time(new Date().getTime()),
+                "Demo section song", true, docCompetition);
+        List<Competitor> docCompetitors = IntStream.rangeClosed(1, 5).mapToObj(i -> new Competitor(
+                faker.random().nextInt(1, 10), IntStream.rangeClosed(1, 2).mapToObj(j -> faker.name().fullName()).toList(),
+                faker.color().name(), String.valueOf(faker.random().nextInt(100, 999)), docSection)).toList();
+
+        competitionRepository.save(docCompetition);
+        sectionRepository.save(docSection);
+        competitorRepository.saveAll(docCompetitors);
     }
 }
